@@ -1,0 +1,53 @@
+{
+  "name": "nodejs-starter",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon --exec babel-node ./src/index.js",
+    "commit": "git-cz",
+    "release": "standard-version",
+    "release:beta": "standard-version -p beta",
+    "build": "babel src -d build",
+    "lint": "eslint .",
+    "test": "jest"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "MIT",
+  "jest": {
+    "transform": {
+      "^.+\\.jsx?$": "babel-jest"
+    }
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
+    "@babel/node": "^7.2.2",
+    "@babel/preset-env": "^7.3.1",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^23.6.0",
+    "cz-conventional-changelog": "^2.1.0",
+    "eslint": "^5.3.0",
+    "eslint-config-airbnb": "^17.1.0",
+    "eslint-config-prettier": "^3.6.0",
+    "eslint-plugin-import": "^2.15.0",
+    "eslint-plugin-jsx-a11y": "^6.2.0",
+    "eslint-plugin-prettier": "^3.0.1",
+    "eslint-plugin-react": "^7.12.4",
+    "eslint-plugin-security": "^1.4.0",
+    "jest": "^23.6.0",
+    "nodemon": "^1.18.9",
+    "prettier": "^1.16.1",
+    "regenerator-runtime": "^0.13.1",
+    "standard-version": "^4.4.0"
+  },
+  "dependencies": {
+    "winston": "^3.1.0"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
