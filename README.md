@@ -1,47 +1,19 @@
-<h1 style="text-align:center;">NodeJS Starter</h1>
+# A library for Ogame
 
-NodeJS starter pack with everything you need 📦 🚀.
+## Introduction
 
-![NodeJS](nodejs.png)
+I always wanted an Ogame calculator that suited me, all those I could see online are, either too old in graphic terms, or it didn't work, it was calculating badly the number of resources to send for each exchange...
 
-## What's included
+So I decided to write a library in Javascript to create accessible methods to perform all calculations in a simple way for anyone who wants to create a graphical interface.
 
-* Support latest Javascript features with [Babel 7](https://babeljs.io)
-* Tests with [Jest](https://jestjs.io)
-* Auto restart server on files change with [Nodemon](https://nodemon.io)
-* Node logging with [Winston](https://github.com/winstonjs/winston)
-* Conventional Commit with [Commitizen](https://github.com/commitizen/cz-cli)
-* Auto versioning and changelog with [Standard Version](https://github.com/conventional-changelog/standard-version)
-* Javascript style and best practices with [Eslint](https://eslint.org) and [Prettier](https://prettier.io)
-* [Github Action](https://github.com/features/actions) on push to build, test and lint
-* Community ready
-  * MIT license file
-  * Github Bug Report template
-  * Github Feature Request template
-  * Github Pull Request template
-  * Contributing guide
-  * Code of conduct (replace your email)
+## Use
 
-## How to use
+All available methods will be listed here
 
-### Install
+- Exchange of deuterium for %metal/%crystal
 
-`npm install`
+```javascript
+getDeut(metal = 0, crystal = 0, metalPercent = 60, crystalPercent = 0) {}
+```
 
-### Start
-
-`npm start`
-
-### Tests / Lint
-
-`npm test`
-
-`npm run lint`
-
-### Commit your changes
-
-`npm run commit`
-
-### Draft a release
-
-`npm run release`
+Function signature accept float values and return the `deut` value for the trade.

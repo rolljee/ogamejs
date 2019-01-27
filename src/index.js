@@ -1,4 +1,10 @@
 import logger from './winston';
-import { sum } from './utils';
 
-logger.info(`The result of 8 + 2 is ${sum(8, 2)}`);
+const Ogame = {
+  getDeut() {
+    logger.info(`return the value`);
+    return 10;
+  }
+};
+
+export default Ogame;
