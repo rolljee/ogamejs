@@ -1,11 +1,10 @@
-import logger from './winston';
 import { hasNaN } from './utils';
 
 const Ogame = {
 	parseRate(rate = '2:1.5:1') {
 		const split = rate.split(':');
 
-		if (split.length != 3) {
+		if (split.length !== 3) {
 			throw new Error('rate not parsed correctly');
 		}
 
