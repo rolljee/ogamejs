@@ -3,5 +3,8 @@
   "plugins": ["prettier", "security"],
   "rules": {
     "prettier/prettier": ["error"]
-  }
+  },
+  "env": {
+		"jest": true
+	}
 }

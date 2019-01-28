@@ -1,4 +1,3 @@
-/* global test expect */
 import Ogame from './index';
 
 test('Should parse rate correctly if not specified', () => {

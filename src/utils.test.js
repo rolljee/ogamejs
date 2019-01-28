@@ -1,4 +1,3 @@
-/* global test expect */
 import { sum, hasNaN } from './utils';
 
 test('adds 1 + 2 to equal 3', () => {
