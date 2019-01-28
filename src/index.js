@@ -10,7 +10,7 @@ const Ogame = {
 
 		const res = {
 			rateMetal: Number(split[0]),
-			rateCristal: Number(split[1]),
+			rateCrystal: Number(split[1]),
 			rateDeut: Number(split[2])
 		};
 
@@ -23,14 +23,40 @@ const Ogame = {
 
 	sellDeut(deut = 0, percentM = 60, percentC = 40, rate = '2:1.5:1') {
 		const pMetal = percentM / 100;
-		const pCristal = percentC / 100;
-		const { rateMetal, rateCristal } = this.parseRate(rate);
+		const pCrystal = percentC / 100;
+		const { rateMetal, rateCrystal } = this.parseRate(rate);
 		const metal = pMetal * rateMetal * deut;
-		const cristal = pCristal * rateCristal * deut;
+		const crystal = pCrystal * rateCrystal * deut;
 
 		return {
 			metal: Math.round(metal),
-			cristal: Math.round(cristal)
+			crystal: Math.round(crystal)
+		};
+	},
+
+	sellMetal(metal = 0, percentD = 40, percentC = 60, rate = '2:1.5:1') {
+		const pDeut = percentD / 100;
+		const pCrystal = percentC / 100;
+		const { rateDeut, rateCrystal } = this.parseRate(rate);
+		const deut = pDeut * rateDeut * metal;
+		const crystal = pCrystal * rateCrystal * metal;
+
+		return {
+			deut: Math.round(deut),
+			crystal: Math.round(crystal)
+		};
+	},
+
+	sellCrystal(crystal = 0, percentD = 40, percentM = 60, rate = '2:1.5:1') {
+		const pDeut = percentD / 100;
+		const pMetal = percentM / 100;
+		const { rateDeut, rateMetal } = this.parseRate(rate);
+		const deut = pDeut * rateDeut * crystal;
+		const metal = pMetal * rateMetal * crystal;
+
+		return {
+			deut: Math.round(deut),
+			metal: Math.round(metal)
 		};
 	}
 };

@@ -1,19 +1,10 @@
 import Ogame from './index';
 
-test('Should parse rate correctly if not specified', () => {
-	const res = Ogame.parseRate();
-	expect(res).toEqual({
-		rateMetal: 2,
-		rateCristal: 1.5,
-		rateDeut: 1
-	});
-});
-
 test('Should parse rate correctly if correctly specified', () => {
 	const res = Ogame.parseRate('3:1.7:1');
 	expect(res).toEqual({
 		rateMetal: 3,
-		rateCristal: 1.7,
+		rateCrystal: 1.7,
 		rateDeut: 1
 	});
 });
@@ -28,7 +19,19 @@ test('Should return an error if rate is not correctly specified', () => {
 });
 
 test('Should calc deut correclty', () => {
-	const { metal, cristal } = Ogame.sellDeut(100000, 60, 40, '2:1.5:1');
+	const { metal, crystal } = Ogame.sellDeut(100000, 50, 50, '2:1.5:1');
 	expect(metal).toBe(120000);
-	expect(cristal).toBe(60000);
+	expect(crystal).toBe(60000);
+});
+
+test('Should calc metal correclty', () => {
+	const { deut, crystal } = Ogame.sellMetal(100000, 50, 50, '2:1.5:1');
+	expect(deut).toBe(60000);
+	expect(crystal).toBe(60000);
+});
+
+test('Should calc crystal correclty', () => {
+	const { deut, metal } = Ogame.sellCrystal(100000, 50, 50, '2:1.5:1');
+	expect(deut).toBe(133333);
+	expect(metal).toBe(66666);
 });

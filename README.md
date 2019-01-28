@@ -6,29 +6,31 @@ I always wanted an Ogame calculator that suited me, all those I could see online
 
 So I decided to write a library in Javascript to create accessible methods to perform all calculations in a simple way for anyone who wants to create a graphical interface.
 
-## Use
+## Api documentation
 
-All available methods will be listed here
+All available methods will be listed below
 
-- `sellDeut()`Exchange of deuterium for %metal/%crystal
+- `sellDeut` Exchange of deuterium against `Metal` and `Crystal`
 
 ```javascript
-// All params are optionnals values placed here will be used if not specified
+// All params are optionnals
+// values placed here will be used if not specified
+sellDeut(deut = 0, percentM = 60, percentC = 40, rate = '2:1.5:1')
 @return {
-	metal: Number,
-	cristal: Number
+  metal: Number,
+  crystal: Number
 }
-sellDeut(deut = 0, percentM = 60, percentC = 40, rate = '2:1.5:1') {}
 ```
 
 - `parseRate()` Parse the exchange rate
 
 ```javascript
-// All params are optionnals values placed here will be used if not specified
-@return {
-	rateDeut: Number,
-	rateMetal: Number,
-	rateCristal: Number
-};
+// All params are optionnals
+// values placed here will be used if not specified
 parseRate(rate = '2:1.5:1') {};
+@return {
+  rateDeut: Number,
+  rateMetal: Number,
+  rateCrystal: Number
+};
 ```
