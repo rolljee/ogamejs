@@ -10,10 +10,25 @@ So I decided to write a library in Javascript to create accessible methods to pe
 
 All available methods will be listed here
 
-- Exchange of deuterium for %metal/%crystal
+- `sellDeut()`Exchange of deuterium for %metal/%crystal
 
 ```javascript
-getDeut(metal = 0, crystal = 0, metalPercent = 60, crystalPercent = 0) {}
+// All params are optionnals values placed here will be used if not specified
+@return {
+	metal: Number,
+	cristal: Number
+}
+sellDeut(deut = 0, percentM = 60, percentC = 40, rate = '2:1.5:1') {}
 ```
 
-Function signature accept float values and return the `deut` value for the trade.
+- `parseRate()` Parse the exchange rate
+
+```javascript
+// All params are optionnals values placed here will be used if not specified
+@return {
+	rateDeut: Number,
+	rateMetal: Number,
+	rateCristal: Number
+};
+parseRate(rate = '2:1.5:1') {};
+```
