@@ -1,4 +1,4 @@
-export function hasNaN(args) {
+export default function hasNaN(args) {
 	let response = false;
 	args.forEach(val => {
 		// eslint-disable-next-line no-restricted-globals
@@ -8,5 +8,3 @@ export function hasNaN(args) {
 	});
 	return response;
 }
-
-export const sum = (a, b) => a + b;

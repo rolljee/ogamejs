@@ -1,8 +1,4 @@
-import { sum, hasNaN } from './utils';
-
-test('adds 1 + 2 to equal 3', () => {
-	expect(sum(1, 2)).toBe(3);
-});
+import { hasNaN } from './utils';
 
 test('Giving a NaN should return true', () => {
 	const res = hasNaN([NaN, 10, 11]);

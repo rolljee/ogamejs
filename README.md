@@ -22,6 +22,30 @@ sellDeut(deut = 0, percentM = 60, percentC = 40, rate = '2:1.5:1')
 }
 ```
 
+- `sellMetal` Exchange of deuterium against `Metal` and `Crystal`
+
+```javascript
+// All params are optionnals
+// values placed here will be used if not specified
+sellMetal(metal = 0, percentD = 40, percentC = 60, rate = '2:1.5:1')
+@return {
+  deut: Number,
+  metal: Number
+}
+```
+
+- `sellCrystal` Exchange of deuterium against `Metal` and `Crystal`
+
+```javascript
+// All params are optionnals
+// values placed here will be used if not specified
+sellCrystal(crystal = 0, percentD = 40, percentM = 60, rate = '2:1.5:1')
+@return {
+  deut: Number,
+  metal: Number
+}
+```
+
 - `parseRate()` Parse the exchange rate
 
 ```javascript
