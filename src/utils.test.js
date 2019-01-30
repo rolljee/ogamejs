@@ -1,4 +1,4 @@
-import { hasNaN } from './utils';
+import hasNaN from './utils';
 
 test('Giving a NaN should return true', () => {
 	const res = hasNaN([NaN, 10, 11]);
