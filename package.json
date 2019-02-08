@@ -12,7 +12,11 @@
     "lint": "eslint .",
     "test": "jest"
   },
-  "keywords": [],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rolljee/ogamejs.git"
+  },
+  "keywords": ["ogame", "calculator", "resources", "javascript"],
   "author": "n.riquelmebareiro@gmail.com",
   "license": "MIT",
   "jest": {
