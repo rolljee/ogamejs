@@ -1,4 +1,4 @@
-import Ogame from './index';
+import Ogame from './trades';
 
 test('Parse rate by selling deut', () => {
 	const res = Ogame.parseRate('2:1.5:1', 'deut');

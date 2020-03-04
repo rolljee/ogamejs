@@ -1,3 +1,3 @@
-import Ogame from './src/index';
-
-export default Ogame;
+import './src/trades';
+import './src/buildings';
+import './src/fleets';
