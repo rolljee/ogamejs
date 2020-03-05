@@ -53,7 +53,7 @@
     "standard-version": "^7.1.0"
   },
   "dependencies": {
-    "set-value": "2.0.1",
+    "set-value": "^2.0.1",
     "winston": "^3.2.1"
   },
   "config": {
