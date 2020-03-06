@@ -1,6 +1,6 @@
 import hasNaN from './utils';
 
-const Ogame = {
+const Trader = {
 	extract(rate, type) {
 		let res = {};
 		const split = rate.split(':').map(Number);
@@ -89,4 +89,4 @@ const Ogame = {
 	}
 };
 
-export default Ogame;
+export default Trader;

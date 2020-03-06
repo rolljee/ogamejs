@@ -1,5 +1,3 @@
-import BUILDINGS from '../models/buildings';
-
 function getPositionFactor(avg) {
 	return 0.68 - 0.002 * avg;
 }
@@ -28,13 +26,13 @@ function getCrystalCost(baseCrystalCost, targetLevel) {
 /**
  *
  * Return information about the deuterium synth given a specific level
+ * @param {object} mine The deut synth base information
  * @param {number} targetLevel the deuterieum synth target level
  * @param {number} avg planet average temperature - The lower the higher the prod is
  * @param {number} universeSpeed production factor is increased for some universe
  * @returns {Object} informations about the deut synth at this specific level
  */
-function getDeutSynth(targetLevel, avg, universeSpeed = 1) {
-	const mine = BUILDINGS[3].base;
+function getDeutSynth(mine, targetLevel, avg, universeSpeed = 1) {
 	const energyCost = getEnergyCost(mine.energy, targetLevel);
 	return {
 		crystal: getCrystalCost(mine.crystal, targetLevel),

@@ -1,8 +1,10 @@
 import getSolarPlant from './solar-plant';
+import BUILDINGS from '../models/buildings';
 
 describe('Solar plant informations should be correctly return when', () => {
 	it('Level 25 is given', () => {
-		const solarPlant = getSolarPlant(25, 5);
+		const mine = BUILDINGS[4].base;
+		const solarPlant = getSolarPlant(mine, 25);
 		expect(solarPlant).toEqual({
 			production: 5417,
 			energy: 0,
