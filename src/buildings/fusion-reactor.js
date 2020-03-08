@@ -1,5 +1,3 @@
-import BUILDINGS from '../models/buildings';
-
 function getEnergyFactor(energyTech) {
 	return 1.05 + 0.01 * energyTech;
 }
@@ -32,21 +30,20 @@ function getConsumption(baseConsumption, targetLevel, universeSpeed) {
 /**
  *
  * Return information about the fusion reactor given a specific level
+ * @param {object} reactor The fusion react base information
  * @param {number} targetLevel
  * @param {number} energyTech The technology energy level
  * @param {number} universeSpeed production factor is increased for some universe
  * @returns {Object} informations about the fusion reactor at this specific level
  */
-function getFusionReactor(targetLevel, energyTech, universeSpeed = 1) {
-	const mine = BUILDINGS[5].base;
-
+function getFusionReactor(reactor, targetLevel, energyTech, universeSpeed = 1) {
 	return {
-		crystal: getCrystalCost(mine.crystal, targetLevel),
+		crystal: getCrystalCost(reactor.crystal, targetLevel),
 		energy: 0,
-		consumption: getConsumption(mine.consumption, targetLevel, universeSpeed),
-		deuterium: getDeuteriumCost(mine.deutrium, targetLevel),
-		metal: getMetalCost(mine.metal, targetLevel),
-		production: getEnergyProduction(mine.production, targetLevel, energyTech)
+		consumption: getConsumption(reactor.consumption, targetLevel, universeSpeed),
+		deuterium: getDeuteriumCost(reactor.deutrium, targetLevel),
+		metal: getMetalCost(reactor.metal, targetLevel),
+		production: getEnergyProduction(reactor.production, targetLevel, energyTech)
 	};
 }
 

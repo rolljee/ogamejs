@@ -1,8 +1,10 @@
-import getDeutMIne from './deut';
+import getDeutMine from './deut';
+import BUILDINGS from '../models/buildings';
 
 describe('Deut mine informations should be correctly return when', () => {
 	it('Level 30 is given and universe speed is 5 and average temperature is 37', () => {
-		const crystalMine = getDeutMIne(30, 37, 5);
+		const mine = BUILDINGS[3].base;
+		const crystalMine = getDeutMine(mine, 30, 37, 5);
 		expect(crystalMine).toEqual({
 			production: 31721,
 			energy: 10469,
@@ -13,7 +15,8 @@ describe('Deut mine informations should be correctly return when', () => {
 	});
 
 	it('Level 32 is given and universe speed is 5 and average temperature is 138', () => {
-		const crystalMine = getDeutMIne(31, -138, 5);
+		const mine = BUILDINGS[3].base;
+		const crystalMine = getDeutMine(mine, 31, -138, 5);
 		expect(crystalMine).toEqual({
 			production: 56882,
 			energy: 11900,

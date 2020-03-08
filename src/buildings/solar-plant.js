@@ -1,5 +1,3 @@
-import BUILDINGS from '../models/buildings';
-
 function getEnergyProduction(baseProduction, targetLevel) {
 	const levelFactor = 1.1 ** targetLevel;
 	return Math.floor(baseProduction * targetLevel * levelFactor);
@@ -18,18 +16,17 @@ function getCrystalCost(baseCrystalCost, targetLevel) {
 /**
  *
  * Return information about the solar plant given a specific level
+ * @param {object} solarPlant The solarPlant base information
  * @param {number} targetLevel
  * @returns {Object} informations about the solar plant at this specific level
  */
-function getSolarPlant(targetLevel) {
-	const mine = BUILDINGS[4].base;
-
+function getSolarPlant(solarPlant, targetLevel) {
 	return {
-		crystal: getCrystalCost(mine.crystal, targetLevel),
+		crystal: getCrystalCost(solarPlant.crystal, targetLevel),
 		energy: 0,
 		deuterium: 0,
-		metal: getMetalCost(mine.metal, targetLevel),
-		production: getEnergyProduction(mine.production, targetLevel)
+		metal: getMetalCost(solarPlant.metal, targetLevel),
+		production: getEnergyProduction(solarPlant.production, targetLevel)
 	};
 }
 

@@ -1,5 +1,3 @@
-import BUILDINGS from '../models/buildings';
-
 function getPositionFactor(pos) {
 	const factor = {
 		1: 1.3,
@@ -7,7 +5,7 @@ function getPositionFactor(pos) {
 		3: 1.15
 	};
 
-	return factor[pos] ? factor[pos] : 1;
+	return factor[Number.parseInt(pos, 10)] ? factor[Number.parseInt(pos, 10)] : 1;
 }
 
 function getMineProduction(baseProduction, targetLevel, pos, universeSpeed) {
@@ -36,13 +34,13 @@ function getCrystalCost(baseCrystalCost, targetLevel) {
 /**
  *
  * Return information about the crystal mine given a specific level
+ * @param {object} mine The crystal mine base information
  * @param {number} targetLevel the crystal mine target level
  * @param {number} pos pos 1/2/3 have a 15/10/5%
  * @param {number} universeSpeed production factor is increased for some universe
  * @returns {Object} informations about the crystal mine at this specific level
  */
-function getCrystalMine(targetLevel, pos, universeSpeed = 1) {
-	const mine = BUILDINGS[2].base;
+function getCrystalMine(mine, targetLevel, pos, universeSpeed = 1) {
 	return {
 		crystal: getCrystalCost(mine.crystal, targetLevel),
 		deuterium: 0,

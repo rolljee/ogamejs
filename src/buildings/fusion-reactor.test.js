@@ -1,8 +1,10 @@
 import getFusionReactor from './fusion-reactor';
+import BUILDINGS from '../models/buildings';
 
 describe('Fusion reactor informations should be correctly return when', () => {
 	it('Level 19 is given with ernergy tech 17', () => {
-		const fusionReact = getFusionReactor(19, 17, 5);
+		const reactor = BUILDINGS[5].base;
+		const fusionReact = getFusionReactor(reactor, 19, 17, 5);
 		expect(fusionReact).toEqual({
 			production: 24929,
 			energy: 0,

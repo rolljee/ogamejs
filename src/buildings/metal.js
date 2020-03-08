@@ -1,5 +1,3 @@
-import BUILDINGS from '../models/buildings';
-
 function getMineProduction(baseProduction, targetLevel, universeSpeed) {
 	const levelFactor = 1.1 ** targetLevel;
 
@@ -25,13 +23,12 @@ function getCrystalCost(baseCrystalCost, targetLevel) {
 /**
  *
  * Return information about the metal mine given a specific level
+ * @param {object} mine The metal mine base information
  * @param {number} targetLevel
  * @param {number} universeSpeed production factor is increased for some universe
  * @returns {Object} informations about the metal mine at this specific level
  */
-function getMetalMine(targetLevel, universeSpeed = 1) {
-	const mine = BUILDINGS[1].base;
-
+function getMetalMine(mine, targetLevel, universeSpeed = 1) {
 	return {
 		crystal: getCrystalCost(mine.crystal, targetLevel),
 		deuterium: 0,
