@@ -3,9 +3,9 @@ import Building from './buildings';
 import Fleets from './fleets';
 
 const Ogame = {
-	Trader,
-	Building,
-	Fleets
+  Trader,
+  Building,
+  Fleets,
 };
 
 export default Ogame;

@@ -5,11 +5,11 @@ import getSolarPlant from './solar-plant';
 import getFusionReactor from './fusion-reactor';
 
 const Buildings = {
-	getCrystalMine,
-	getDeutSynth,
-	getMetalMine,
-	getSolarPlant,
-	getFusionReactor
+  getCrystalMine,
+  getDeutSynth,
+  getMetalMine,
+  getSolarPlant,
+  getFusionReactor,
 };
 
 export default Buildings;

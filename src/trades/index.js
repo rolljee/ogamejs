@@ -4,10 +4,10 @@ import sellCrystal from './crystal';
 import sellMetal from './metal';
 
 const Trader = {
-	parseRate,
-	sellDeut,
-	sellCrystal,
-	sellMetal
+  parseRate,
+  sellDeut,
+  sellCrystal,
+  sellMetal,
 };
 
 export default Trader;

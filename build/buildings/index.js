@@ -1,11 +1,10 @@
-"use strict";
 
-require("./crystal");
+require('./crystal');
 
-require("./deut");
+require('./deut');
 
-require("./metal");
+require('./metal');
 
-require("./solar-plant");
+require('./solar-plant');
 
-require("./fusion-reactor");
+require('./fusion-reactor');

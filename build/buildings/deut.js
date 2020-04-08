@@ -1,32 +1,31 @@
-"use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
+Object.defineProperty(exports, '__esModule', {
+  value: true,
 });
-exports["default"] = void 0;
+exports.default = void 0;
 
 function getPositionFactor(avg) {
   return 0.68 - 0.002 * avg;
 }
 
 function getMineProduction(energyCost, avg, universeSpeed) {
-  var factor = getPositionFactor(avg);
+  const factor = getPositionFactor(avg);
   return Math.floor(universeSpeed * energyCost * factor);
 }
 
 function getEnergyCost(baseEnergyCost, targetLevel) {
-  var level = targetLevel;
-  var levelFactor = Math.pow(1.1, level);
+  const level = targetLevel;
+  const levelFactor = Math.pow(1.1, level);
   return Math.floor(baseEnergyCost * level * levelFactor);
 }
 
 function getMetalCost(baseMetalCost, targetLevel) {
-  var level = targetLevel - 1;
+  const level = targetLevel - 1;
   return Math.floor(baseMetalCost * Math.pow(1.5, level));
 }
 
 function getCrystalCost(baseCrystalCost, targetLevel) {
-  var level = targetLevel - 1;
+  const level = targetLevel - 1;
   return Math.floor(baseCrystalCost * Math.pow(1.5, level));
 }
 /**
@@ -41,16 +40,16 @@ function getCrystalCost(baseCrystalCost, targetLevel) {
 
 
 function getDeutSynth(mine, targetLevel, avg) {
-  var universeSpeed = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
-  var energyCost = getEnergyCost(mine.energy, targetLevel);
+  const universeSpeed = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : 1;
+  const energyCost = getEnergyCost(mine.energy, targetLevel);
   return {
     crystal: getCrystalCost(mine.crystal, targetLevel),
     energy: energyCost,
     deuterium: 0,
     metal: getMetalCost(mine.metal, targetLevel),
-    production: getMineProduction(energyCost, avg, universeSpeed)
+    production: getMineProduction(energyCost, avg, universeSpeed),
   };
 }
 
-var _default = getDeutSynth;
-exports["default"] = _default;
+const _default = getDeutSynth;
+exports.default = _default;

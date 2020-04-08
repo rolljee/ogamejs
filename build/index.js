@@ -1,7 +1,6 @@
-"use strict";
 
-require("./trades");
+require('./trades');
 
-require("./buildings");
+require('./buildings');
 
-require("./fleets");
+require('./fleets');

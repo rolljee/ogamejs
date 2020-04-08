@@ -1,34 +1,34 @@
 function getPositionFactor(pos) {
-	const factor = {
-		1: 1.3,
-		2: 1.225,
-		3: 1.15
-	};
+  const factor = {
+    1: 1.3,
+    2: 1.225,
+    3: 1.15,
+  };
 
-	return factor[Number.parseInt(pos, 10)] ? factor[Number.parseInt(pos, 10)] : 1;
+  return factor[Number.parseInt(pos, 10)] ? factor[Number.parseInt(pos, 10)] : 1;
 }
 
 function getMineProduction(baseProduction, targetLevel, pos, universeSpeed) {
-	const positionFactor = getPositionFactor(pos);
-	const levelFactor = 1.1 ** targetLevel;
+  const positionFactor = getPositionFactor(pos);
+  const levelFactor = 1.1 ** targetLevel;
 
-	return Math.floor(baseProduction * targetLevel * levelFactor * universeSpeed * positionFactor);
+  return Math.floor(baseProduction * targetLevel * levelFactor * universeSpeed * positionFactor);
 }
 
 function getEnergyCost(baseEnergyCost, targetLevel) {
-	const level = targetLevel;
-	const levelFactor = 1.1 ** level;
-	return Math.floor(baseEnergyCost * level * levelFactor);
+  const level = targetLevel;
+  const levelFactor = 1.1 ** level;
+  return Math.floor(baseEnergyCost * level * levelFactor);
 }
 
 function getMetalCost(baseMetalCost, targetLevel) {
-	const level = targetLevel - 1;
-	return Math.floor(baseMetalCost * 1.6 ** level);
+  const level = targetLevel - 1;
+  return Math.floor(baseMetalCost * 1.6 ** level);
 }
 
 function getCrystalCost(baseCrystalCost, targetLevel) {
-	const level = targetLevel - 1;
-	return Math.floor(baseCrystalCost * 1.6 ** level);
+  const level = targetLevel - 1;
+  return Math.floor(baseCrystalCost * 1.6 ** level);
 }
 
 /**
@@ -41,13 +41,13 @@ function getCrystalCost(baseCrystalCost, targetLevel) {
  * @returns {Object} informations about the crystal mine at this specific level
  */
 function getCrystalMine(mine, targetLevel, pos, universeSpeed = 1) {
-	return {
-		crystal: getCrystalCost(mine.crystal, targetLevel),
-		deuterium: 0,
-		energy: getEnergyCost(mine.energy, targetLevel),
-		metal: getMetalCost(mine.metal, targetLevel),
-		production: getMineProduction(mine.production, targetLevel, pos, universeSpeed)
-	};
+  return {
+    crystal: getCrystalCost(mine.crystal, targetLevel),
+    deuterium: 0,
+    energy: getEnergyCost(mine.energy, targetLevel),
+    metal: getMetalCost(mine.metal, targetLevel),
+    production: getMineProduction(mine.production, targetLevel, pos, universeSpeed),
+  };
 }
 
 export default getCrystalMine;

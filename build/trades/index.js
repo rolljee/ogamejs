@@ -1,3 +1,2 @@
-"use strict";
 
-require("./trades");
+require('./trades');

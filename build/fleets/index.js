@@ -1,3 +1,2 @@
-"use strict";
 
-require("./getDebris");
+require('./getDebris');

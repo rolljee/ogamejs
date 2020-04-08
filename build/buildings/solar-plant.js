@@ -1,22 +1,21 @@
-"use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
+Object.defineProperty(exports, '__esModule', {
+  value: true,
 });
-exports["default"] = void 0;
+exports.default = void 0;
 
 function getEnergyProduction(baseProduction, targetLevel) {
-  var levelFactor = Math.pow(1.1, targetLevel);
+  const levelFactor = Math.pow(1.1, targetLevel);
   return Math.floor(baseProduction * targetLevel * levelFactor);
 }
 
 function getMetalCost(baseMetalCost, targetLevel) {
-  var level = targetLevel - 1;
+  const level = targetLevel - 1;
   return Math.floor(baseMetalCost * Math.pow(1.5, level));
 }
 
 function getCrystalCost(baseCrystalCost, targetLevel) {
-  var level = targetLevel - 1;
+  const level = targetLevel - 1;
   return Math.floor(baseCrystalCost * Math.pow(1.5, level));
 }
 /**
@@ -34,9 +33,9 @@ function getSolarPlant(solarPlant, targetLevel) {
     energy: 0,
     deuterium: 0,
     metal: getMetalCost(solarPlant.metal, targetLevel),
-    production: getEnergyProduction(solarPlant.production, targetLevel)
+    production: getEnergyProduction(solarPlant.production, targetLevel),
   };
 }
 
-var _default = getSolarPlant;
-exports["default"] = _default;
+const _default = getSolarPlant;
+exports.default = _default;

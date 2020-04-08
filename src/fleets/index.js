@@ -1,7 +1,7 @@
 import getDebris from './getDebris';
 
 const Fleets = {
-	getDebris
+  getDebris,
 };
 
 export default Fleets;

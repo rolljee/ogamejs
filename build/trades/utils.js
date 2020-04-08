@@ -1,13 +1,12 @@
-"use strict";
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
+Object.defineProperty(exports, '__esModule', {
+  value: true,
 });
-exports["default"] = hasNaN;
+exports.default = hasNaN;
 
 function hasNaN(args) {
-  var response = false;
-  args.forEach(function (val) {
+  let response = false;
+  args.forEach((val) => {
     // eslint-disable-next-line no-restricted-globals
     if (isNaN(val)) {
       response = true;
