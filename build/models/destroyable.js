@@ -1,21 +1,22 @@
+"use strict";
 
-Object.defineProperty(exports, '__esModule', {
-  value: true,
+Object.defineProperty(exports, "__esModule", {
+  value: true
 });
-exports.default = void 0;
-const ATTRIBUTES = Object.freeze({
+exports["default"] = void 0;
+var ATTRIBUTES = Object.freeze({
   TYPES: {
     ATTACK: 'attack',
     CIVIL: 'civil',
-    DEFENSE: 'defense',
+    DEFENSE: 'defense'
   },
   CATEGORIES: {
     SHIPS: 'ships',
     DEFENSES: 'defenses',
-    MISSILE: 'missiles',
-  },
+    MISSILE: 'missiles'
+  }
 });
-const DESTROYABLE = Object.freeze({
+var DESTROYABLE = Object.freeze({
   1: {
     name: 'chasseur léger',
     structure: 4000,
@@ -28,19 +29,19 @@ const DESTROYABLE = Object.freeze({
     category: ATTRIBUTES.CATEGORIES.SHIPS,
     rapidFire: [{
       target: 15,
-      fire: 5,
+      fire: 5
     }, {
       target: 16,
-      fire: 5,
+      fire: 5
     }, {
       target: 17,
-      fire: 5,
+      fire: 5
     }],
     cost: {
       metal: 3000,
       crystal: 1000,
-      deut: 0,
-    },
+      deut: 0
+    }
   },
   2: {
     name: 'chasseur lourd',
@@ -54,22 +55,22 @@ const DESTROYABLE = Object.freeze({
     category: ATTRIBUTES.CATEGORIES.SHIPS,
     rapidFire: [{
       target: 11,
-      fire: 3,
+      fire: 3
     }, {
       target: 15,
-      fire: 5,
+      fire: 5
     }, {
       target: 16,
-      fire: 5,
+      fire: 5
     }, {
       target: 17,
-      fire: 5,
+      fire: 5
     }],
     cost: {
       metal: 6000,
       crystal: 4000,
-      deut: 0,
-    },
+      deut: 0
+    }
   },
   3: {
     name: 'Croiseurs',
@@ -83,25 +84,25 @@ const DESTROYABLE = Object.freeze({
     category: ATTRIBUTES.CATEGORIES.SHIPS,
     rapidFire: [{
       target: 1,
-      fire: 6,
+      fire: 6
     }, {
       target: 15,
-      fire: 5,
+      fire: 5
     }, {
       target: 16,
-      fire: 5,
+      fire: 5
     }, {
       target: 17,
-      fire: 5,
+      fire: 5
     }, {
       target: 201,
-      fire: 10,
+      fire: 10
     }],
     cost: {
       metal: 20000,
       crystal: 7000,
-      deut: 2000,
-    },
+      deut: 2000
+    }
   },
   4: {
     name: 'Vaisseau de bataille',
@@ -115,19 +116,19 @@ const DESTROYABLE = Object.freeze({
     category: ATTRIBUTES.CATEGORIES.SHIPS,
     rapidFire: [{
       target: 15,
-      fire: 5,
+      fire: 5
     }, {
       target: 16,
-      fire: 5,
+      fire: 5
     }, {
       target: 17,
-      fire: 5,
+      fire: 5
     }],
     cost: {
       metal: 45000,
       crystal: 15000,
-      deut: 0,
-    },
+      deut: 0
+    }
   },
   5: {
     name: 'Traqueur',
@@ -141,34 +142,34 @@ const DESTROYABLE = Object.freeze({
     category: ATTRIBUTES.CATEGORIES.SHIPS,
     rapidFire: [{
       target: 2,
-      fire: 4,
+      fire: 4
     }, {
       target: 3,
-      fire: 4,
+      fire: 4
     }, {
       target: 4,
-      fire: 7,
+      fire: 7
     }, {
       target: 11,
-      fire: 3,
+      fire: 3
     }, {
       target: 12,
-      fire: 3,
+      fire: 3
     }, {
       target: 15,
-      fire: 5,
+      fire: 5
     }, {
       target: 16,
-      fire: 5,
+      fire: 5
     }, {
       target: 17,
-      fire: 5,
+      fire: 5
     }],
     cost: {
       metal: 30000,
       crystal: 40000,
-      deut: 15000,
-    },
+      deut: 15000
+    }
   },
   6: {
     name: 'Bombardier',
@@ -182,37 +183,37 @@ const DESTROYABLE = Object.freeze({
     category: ATTRIBUTES.CATEGORIES.SHIPS,
     rapidFire: [{
       target: 15,
-      fire: 5,
+      fire: 5
     }, {
       target: 16,
-      fire: 5,
+      fire: 5
     }, {
       target: 17,
-      fire: 5,
+      fire: 5
     }, {
       target: 201,
-      fire: 20,
+      fire: 20
     }, {
       target: 202,
-      fire: 20,
+      fire: 20
     }, {
       target: 203,
-      fire: 10,
+      fire: 10
     }, {
       target: 204,
-      fire: 5,
+      fire: 5
     }, {
       target: 205,
-      fire: 10,
+      fire: 10
     }, {
       target: 206,
-      fire: 5,
+      fire: 5
     }],
     cost: {
       metal: 50000,
       crystal: 25000,
-      deut: 15000,
-    },
+      deut: 15000
+    }
   },
   7: {
     name: 'Destructeur',
@@ -226,25 +227,25 @@ const DESTROYABLE = Object.freeze({
     category: ATTRIBUTES.CATEGORIES.SHIPS,
     rapidFire: [{
       target: 15,
-      fire: 5,
+      fire: 5
     }, {
       target: 16,
-      fire: 5,
+      fire: 5
     }, {
       target: 17,
-      fire: 5,
+      fire: 5
     }, {
       target: 5,
-      fire: 2,
+      fire: 2
     }, {
       target: 202,
-      fire: 10,
+      fire: 10
     }],
     cost: {
       metal: 60000,
       crystal: 50000,
-      deut: 15000,
-    },
+      deut: 15000
+    }
   },
   8: {
     name: 'Étoile de la mort',
@@ -258,73 +259,73 @@ const DESTROYABLE = Object.freeze({
     category: ATTRIBUTES.CATEGORIES.SHIPS,
     rapidFire: [{
       target: 1,
-      fire: 200,
+      fire: 200
     }, {
       target: 2,
-      fire: 100,
+      fire: 100
     }, {
       target: 3,
-      fire: 33,
+      fire: 33
     }, {
       target: 4,
-      fire: 30,
+      fire: 30
     }, {
       target: 5,
-      fire: 15,
+      fire: 15
     }, {
       target: 6,
-      fire: 25,
+      fire: 25
     }, {
       target: 7,
-      fire: 5,
+      fire: 5
     }, {
       target: 9,
-      fire: 10,
+      fire: 10
     }, {
       target: 10,
-      fire: 30,
+      fire: 30
     }, {
       target: 11,
-      fire: 250,
+      fire: 250
     }, {
       target: 12,
-      fire: 250,
+      fire: 250
     }, {
       target: 13,
-      fire: 250,
+      fire: 250
     }, {
       target: 14,
-      fire: 250,
+      fire: 250
     }, {
       target: 15,
-      fire: 1250,
+      fire: 1250
     }, {
       target: 16,
-      fire: 1250,
+      fire: 1250
     }, {
       target: 17,
-      fire: 1250,
+      fire: 1250
     }, {
       target: 201,
-      fire: 200,
+      fire: 200
     }, {
       target: 202,
-      fire: 200,
+      fire: 200
     }, {
       target: 203,
-      fire: 100,
+      fire: 100
     }, {
       target: 204,
-      fire: 50,
+      fire: 50
     }, {
       target: 205,
-      fire: 100,
+      fire: 100
     }],
     cost: {
       metal: 5000000,
       crystal: 4000000,
-      deut: 1000000,
-    },
+      deut: 1000000
+    }
   },
   9: {
     name: 'Faucheur',
@@ -338,28 +339,28 @@ const DESTROYABLE = Object.freeze({
     category: ATTRIBUTES.CATEGORIES.SHIPS,
     rapidFire: [{
       target: 15,
-      fire: 5,
+      fire: 5
     }, {
       target: 16,
-      fire: 5,
+      fire: 5
     }, {
       target: 17,
-      fire: 5,
+      fire: 5
     }, {
       target: 4,
-      fire: 7,
+      fire: 7
     }, {
       target: 6,
-      fire: 4,
+      fire: 4
     }, {
       target: 7,
-      fire: 3,
+      fire: 3
     }],
     cost: {
       metal: 85000,
       crystal: 55000,
-      deut: 20000,
-    },
+      deut: 20000
+    }
   },
   10: {
     name: 'Éclaireur',
@@ -373,28 +374,28 @@ const DESTROYABLE = Object.freeze({
     category: ATTRIBUTES.CATEGORIES.SHIPS,
     rapidFire: [{
       target: 1,
-      fire: 3,
+      fire: 3
     }, {
       target: 2,
-      fire: 2,
+      fire: 2
     }, {
       target: 3,
-      fire: 3,
+      fire: 3
     }, {
       target: 15,
-      fire: 5,
+      fire: 5
     }, {
       target: 16,
-      fire: 5,
+      fire: 5
     }, {
       target: 17,
-      fire: 5,
+      fire: 5
     }],
     cost: {
       metal: 8000,
       crystal: 15000,
-      deut: 8000,
-    },
+      deut: 8000
+    }
   },
   11: {
     name: 'Petit transporteur',
@@ -408,19 +409,19 @@ const DESTROYABLE = Object.freeze({
     category: ATTRIBUTES.CATEGORIES.SHIPS,
     rapidFire: [{
       target: 15,
-      fire: 5,
+      fire: 5
     }, {
       target: 16,
-      fire: 5,
+      fire: 5
     }, {
       target: 17,
-      fire: 5,
+      fire: 5
     }],
     cost: {
       metal: 2000,
       crystal: 2000,
-      deut: 0,
-    },
+      deut: 0
+    }
   },
   12: {
     name: 'Grand transporteur',
@@ -434,19 +435,19 @@ const DESTROYABLE = Object.freeze({
     category: ATTRIBUTES.CATEGORIES.SHIPS,
     rapidFire: [{
       target: 15,
-      fire: 5,
+      fire: 5
     }, {
       target: 16,
-      fire: 5,
+      fire: 5
     }, {
       target: 17,
-      fire: 5,
+      fire: 5
     }],
     cost: {
       metal: 6000,
       crystal: 6000,
-      deut: 0,
-    },
+      deut: 0
+    }
   },
   13: {
     name: 'Vaisseaux de colonisation',
@@ -460,19 +461,19 @@ const DESTROYABLE = Object.freeze({
     category: ATTRIBUTES.CATEGORIES.SHIPS,
     rapidFire: [{
       target: 15,
-      fire: 5,
+      fire: 5
     }, {
       target: 16,
-      fire: 5,
+      fire: 5
     }, {
       target: 17,
-      fire: 5,
+      fire: 5
     }],
     cost: {
       metal: 10000,
       crystal: 20000,
-      deut: 10000,
-    },
+      deut: 10000
+    }
   },
   14: {
     name: 'Recycleur',
@@ -486,19 +487,19 @@ const DESTROYABLE = Object.freeze({
     category: ATTRIBUTES.CATEGORIES.SHIPS,
     rapidFire: [{
       target: 15,
-      fire: 5,
+      fire: 5
     }, {
       target: 16,
-      fire: 5,
+      fire: 5
     }, {
       target: 17,
-      fire: 5,
+      fire: 5
     }],
     cost: {
       metal: 10000,
       crystal: 6000,
-      deut: 2000,
-    },
+      deut: 2000
+    }
   },
   15: {
     name: 'Sonde espionnage',
@@ -514,8 +515,8 @@ const DESTROYABLE = Object.freeze({
     cost: {
       metal: 0,
       crystal: 1000,
-      deut: 0,
-    },
+      deut: 0
+    }
   },
   16: {
     name: 'Satellite solaire',
@@ -531,8 +532,8 @@ const DESTROYABLE = Object.freeze({
     cost: {
       metal: 0,
       crystal: 2000,
-      deut: 500,
-    },
+      deut: 500
+    }
   },
   17: {
     name: 'Foreuse',
@@ -548,8 +549,8 @@ const DESTROYABLE = Object.freeze({
     cost: {
       metal: 2000,
       crystal: 2000,
-      deut: 1000,
-    },
+      deut: 1000
+    }
   },
   201: {
     name: 'Lanceur missile',
@@ -565,8 +566,8 @@ const DESTROYABLE = Object.freeze({
     cost: {
       metal: 2000,
       crystal: 0,
-      deut: 0,
-    },
+      deut: 0
+    }
   },
   202: {
     name: 'Artillerie laser légère',
@@ -582,8 +583,8 @@ const DESTROYABLE = Object.freeze({
     cost: {
       metal: 1500,
       crystal: 500,
-      deut: 0,
-    },
+      deut: 0
+    }
   },
   203: {
     name: 'Artillerie laser lourde',
@@ -599,8 +600,8 @@ const DESTROYABLE = Object.freeze({
     cost: {
       metal: 6000,
       crystal: 2000,
-      deut: 0,
-    },
+      deut: 0
+    }
   },
   204: {
     name: 'Canon de gauss',
@@ -616,8 +617,8 @@ const DESTROYABLE = Object.freeze({
     cost: {
       metal: 20000,
       crystal: 15000,
-      deut: 2000,
-    },
+      deut: 2000
+    }
   },
   205: {
     name: 'Artillerie à ion',
@@ -631,13 +632,13 @@ const DESTROYABLE = Object.freeze({
     category: ATTRIBUTES.CATEGORIES.DEFENSES,
     rapidFire: [{
       target: 9,
-      fire: 2,
+      fire: 2
     }],
     cost: {
       metal: 5000,
       crystal: 3000,
-      deut: 0,
-    },
+      deut: 0
+    }
   },
   206: {
     name: 'Lanceur plasma',
@@ -653,8 +654,8 @@ const DESTROYABLE = Object.freeze({
     cost: {
       metal: 50000,
       crystal: 50000,
-      deut: 30000,
-    },
+      deut: 30000
+    }
   },
   207: {
     name: 'Petit bouclier',
@@ -670,8 +671,8 @@ const DESTROYABLE = Object.freeze({
     cost: {
       metal: 10000,
       crystal: 10000,
-      deut: 0,
-    },
+      deut: 0
+    }
   },
   208: {
     name: 'Grand bouclier',
@@ -687,8 +688,8 @@ const DESTROYABLE = Object.freeze({
     cost: {
       metal: 50000,
       crystal: 50000,
-      deut: 0,
-    },
+      deut: 0
+    }
   },
   301: {
     name: "Missile d'interception",
@@ -704,8 +705,8 @@ const DESTROYABLE = Object.freeze({
     cost: {
       metal: 8000,
       crystal: 0,
-      deut: 2000,
-    },
+      deut: 2000
+    }
   },
   302: {
     name: 'Missile interplanétaire',
@@ -721,9 +722,9 @@ const DESTROYABLE = Object.freeze({
     cost: {
       metal: 12500,
       crystal: 2500,
-      deut: 10000,
-    },
-  },
+      deut: 10000
+    }
+  }
 });
-const _default = DESTROYABLE;
-exports.default = _default;
+var _default = DESTROYABLE;
+exports["default"] = _default;

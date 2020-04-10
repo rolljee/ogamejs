@@ -1,9 +1,10 @@
+"use strict";
 
-Object.defineProperty(exports, '__esModule', {
-  value: true,
+Object.defineProperty(exports, "__esModule", {
+  value: true
 });
-exports.default = void 0;
-const BUILDINGS = Object.freeze({
+exports["default"] = void 0;
+var BUILDINGS = Object.freeze({
   1: {
     name: 'Mine de métal',
     base: {
@@ -12,8 +13,8 @@ const BUILDINGS = Object.freeze({
       metal: 60,
       crystal: 15,
       deutrium: 0,
-      energy: 10,
-    },
+      energy: 10
+    }
   },
   2: {
     name: 'Mine de cristal',
@@ -23,8 +24,8 @@ const BUILDINGS = Object.freeze({
       metal: 48,
       crystal: 24,
       deutrium: 0,
-      energy: 10,
-    },
+      energy: 10
+    }
   },
   3: {
     name: 'Synthétiseur de deutérium',
@@ -34,8 +35,8 @@ const BUILDINGS = Object.freeze({
       metal: 225,
       crystal: 75,
       deutrium: 0,
-      energy: 20,
-    },
+      energy: 20
+    }
   },
   4: {
     name: 'Centrale électrique solaire',
@@ -45,8 +46,8 @@ const BUILDINGS = Object.freeze({
       metal: 75,
       crystal: 30,
       deutrium: 0,
-      energy: 0,
-    },
+      energy: 0
+    }
   },
   5: {
     name: 'Centrale électrique de fusion',
@@ -56,9 +57,9 @@ const BUILDINGS = Object.freeze({
       metal: 900,
       crystal: 360,
       deutrium: 180,
-      energy: 0,
-    },
-  },
+      energy: 0
+    }
+  }
 });
-const _default = BUILDINGS;
-exports.default = _default;
+var _default = BUILDINGS;
+exports["default"] = _default;

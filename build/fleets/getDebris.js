@@ -1,8 +1,9 @@
+"use strict";
 
-Object.defineProperty(exports, '__esModule', {
-  value: true,
+Object.defineProperty(exports, "__esModule", {
+  value: true
 });
-exports.default = void 0;
+exports["default"] = void 0;
 
 /**
  *
@@ -13,14 +14,14 @@ exports.default = void 0;
  * @return {Object} The debris generated
  */
 function getDebris(ship, number, factor) {
-  const { cost } = ship;
-  const metalDebris = cost.metal ? cost.metal * factor : 0;
-  const crystalDebris = cost.crystal ? cost.crystal * factor : 0;
+  var cost = ship.cost;
+  var metalDebris = cost.metal ? cost.metal * factor : 0;
+  var crystalDebris = cost.crystal ? cost.crystal * factor : 0;
   return {
     metal: metalDebris * number,
-    crystal: crystalDebris * number,
+    crystal: crystalDebris * number
   };
 }
 
-const _default = getDebris;
-exports.default = _default;
+var _default = getDebris;
+exports["default"] = _default;
