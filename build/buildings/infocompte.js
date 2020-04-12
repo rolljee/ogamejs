@@ -23,6 +23,13 @@ function toNumber() {
   var number = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : '';
   return Number(number.split('.').join(''));
 }
+/**
+ *
+ * Return information about the crystal mine given a specific level
+ * @param {object} data The infocompte bb-code
+ * @returns {Object} The parsed JSON object of infocompte
+ */
+
 
 function parseInfoCompteData(data) {
   // eslint-disable-next-line security/detect-unsafe-regex

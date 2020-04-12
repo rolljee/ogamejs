@@ -2,6 +2,12 @@ function toNumber(number = '') {
   return Number(number.split('.').join(''));
 }
 
+/**
+ *
+ * Return information about the crystal mine given a specific level
+ * @param {object} data The infocompte bb-code
+ * @returns {Object} The parsed JSON object of infocompte
+ */
 function parseInfoCompteData(data) {
   // eslint-disable-next-line security/detect-unsafe-regex
   const planetsRe = new RegExp('(?:Planète [0-9]+(.+))(?:s+(?:Planète [0-9]+))*', 'g');
