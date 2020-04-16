@@ -4,6 +4,9 @@ function toNumber(number = '') {
 
 function parseInfoCompteData(data) {
   // eslint-disable-next-line security/detect-unsafe-regex
+  const universeDataRe = new RegExp('([0-9]{3}-[a-z]{2})');
+  const [universe, lang] = data.match(universeDataRe)[1].split('-');
+
   const planetsRe = new RegExp('(?:Planète [0-9]+(.+))(?:s+(?:Planète [0-9]+))*', 'g');
   const planets = data.matchAll(planetsRe);
 
@@ -59,6 +62,8 @@ function parseInfoCompteData(data) {
       total: metalPoint + crystalPoint + deutPoint,
     },
     plasma: plasmaTechLevel,
+    universe: Number(universe),
+    lang,
   };
 
   // eslint-disable-next-line no-restricted-syntax

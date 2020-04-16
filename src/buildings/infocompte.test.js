@@ -77,6 +77,8 @@ describe('Infocompte informations should be correctly return when', () => {
         metal: 4832457, crystal: 2807321, deut: 3343660, total: 10983438,
       },
       plasma: 15,
+      universe: 165,
+      lang: 'fr',
     });
   });
 });
