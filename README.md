@@ -136,11 +136,11 @@ function getFusionReactor(reactor, targetLevel, energyTech, universeSpeed = 1) {
  */
 function parseInfoCompteData(data) {
     @return {
-        planet: thePlanet.trim(),
-        metal: metal.trim().split(' ')[1],
-        crystal: crystal.trim().split(' ')[1],
-        deut: deut.trim().split(' ')[1],
-        temperature: Number.parseInt(temperature.trim(), 10),
+        planet: String,
+        metal: String,
+        crystal: String,
+        deut: String,
+        temperature: Number,
     }
 }
 ```
