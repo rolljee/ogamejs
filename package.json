@@ -6,9 +6,7 @@
   "scripts": {
     "start": "babel-node index.js",
     "commit": "git-cz",
-    "prerelease": "babel src -d build",
-    "release": "standard-version",
-    "release:beta": "standard-version -p beta",
+    "build": "babel src -d build",
     "lint": "eslint .",
     "test": "jest"
   },
