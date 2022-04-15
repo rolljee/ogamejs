@@ -99,7 +99,9 @@ describe('Infocompte informations should be correctly return when', function () 
         deut: 3343660,
         total: 10983438
       },
-      plasma: 15
+      plasma: 15,
+      universe: 165,
+      lang: 'fr'
     });
   });
 });

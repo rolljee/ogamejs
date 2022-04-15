@@ -32,7 +32,14 @@ function toNumber() {
 
 
 function parseInfoCompteData(data) {
-  // eslint-disable-next-line security/detect-unsafe-regex
+  var universeDataRe = new RegExp('([0-9]{3}-[a-z]{2})');
+
+  var _data$match$1$split = data.match(universeDataRe)[1].split('-'),
+      _data$match$1$split2 = _slicedToArray(_data$match$1$split, 2),
+      universe = _data$match$1$split2[0],
+      lang = _data$match$1$split2[1]; // eslint-disable-next-line security/detect-unsafe-regex
+
+
   var planetsRe = new RegExp('(?:Planète [0-9]+(.+))(?:s+(?:Planète [0-9]+))*', 'g');
   var planets = data.matchAll(planetsRe);
   var metalPointRe = new RegExp('Points dans les mines de métal : (.+)');
@@ -94,7 +101,9 @@ function parseInfoCompteData(data) {
       deut: deutPoint,
       total: metalPoint + crystalPoint + deutPoint
     },
-    plasma: plasmaTechLevel
+    plasma: plasmaTechLevel,
+    universe: Number(universe),
+    lang: lang
   }; // eslint-disable-next-line no-restricted-syntax
 
   var _iterator = _createForOfIteratorHelper(planets),
