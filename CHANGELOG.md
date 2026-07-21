@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](https://semver.org) and releases are automated with [semantic-release](https://github.com/semantic-release/semantic-release).
 
 ### [2.1.3](https://github.com/rolljee/ogamejs/compare/v2.1.2...v2.1.3) (2020-04-16)
 
@@ -47,4 +47,4 @@ All notable changes to this project will be documented in this file. See [standa
 
 # Change Log
 
-All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
+All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](https://semver.org) and releases are automated with [semantic-release](https://github.com/semantic-release/semantic-release).

@@ -1,4 +1,4 @@
-import sellCrystal from './crystal';
+import sellCrystal from './crystal.js';
 
 describe('A crystal trade', () => {
   it('Sell 100000 at 50/50 at rate 2:1.5:1', () => {

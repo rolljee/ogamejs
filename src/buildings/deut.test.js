@@ -1,5 +1,5 @@
-import getDeutMine from './deut';
-import BUILDINGS from '../models/buildings';
+import getDeutMine from './deut.js';
+import BUILDINGS from '../models/buildings.js';
 
 describe('Deut mine informations should be correctly return when', () => {
   it('Level 30 is given and universe speed is 5 and average temperature is 37', () => {

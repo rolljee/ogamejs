@@ -1,5 +1,5 @@
-import getSolarPlant from './solar-plant';
-import BUILDINGS from '../models/buildings';
+import getSolarPlant from './solar-plant.js';
+import BUILDINGS from '../models/buildings.js';
 
 describe('Solar plant informations should be correctly return when', () => {
   it('Level 25 is given', () => {

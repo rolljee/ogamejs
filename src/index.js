@@ -1,8 +1,8 @@
-import Trader from './trades';
-import Building from './buildings';
-import Fleets from './fleets';
-import Buildings from './models/buildings';
-import Destroyable from './models/destroyable';
+import Trader from './trades/index.js';
+import Building from './buildings/index.js';
+import Fleets from './fleets/index.js';
+import Buildings from './models/buildings.js';
+import Destroyable from './models/destroyable.js';
 
 const Ogame = {
   Trader,

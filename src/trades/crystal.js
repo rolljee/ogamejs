@@ -1,4 +1,4 @@
-import parseRate from './parseRate';
+import parseRate from './parseRate.js';
 
 function sellCrystal(crystal = 0, percentD = 40, percentM = 60, rate = '2:1.5:1') {
   const pDeut = percentD / 100;

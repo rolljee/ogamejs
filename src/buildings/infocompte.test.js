@@ -1,4 +1,4 @@
-import parseInfoCompteData from './infocompte';
+import parseInfoCompteData from './infocompte.js';
 
 describe('Infocompte informations should be correctly return when', () => {
   it('Version is ', () => {

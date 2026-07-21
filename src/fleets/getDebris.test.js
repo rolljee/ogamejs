@@ -1,5 +1,5 @@
-import getDebris from './getDebris';
-import DESTROYABLE from '../models/destroyable';
+import getDebris from './getDebris.js';
+import DESTROYABLE from '../models/destroyable.js';
 
 describe('Debris should be correctly return when', () => {
   it('A 10 light fighter crash with 60% in harvest fields', () => {

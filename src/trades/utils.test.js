@@ -1,4 +1,4 @@
-import hasNaN from './utils';
+import hasNaN from './utils.js';
 
 describe('Test has NaN function', () => {
   it('Giving a NaN should return true', () => {

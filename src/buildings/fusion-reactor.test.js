@@ -1,5 +1,5 @@
-import getFusionReactor from './fusion-reactor';
-import BUILDINGS from '../models/buildings';
+import getFusionReactor from './fusion-reactor.js';
+import BUILDINGS from '../models/buildings.js';
 
 describe('Fusion reactor informations should be correctly return when', () => {
   it('Level 19 is given with ernergy tech 17', () => {

@@ -1,4 +1,4 @@
-import hasNaN from './utils';
+import hasNaN from './utils.js';
 
 function extract(rate, type) {
   let res = {};

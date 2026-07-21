@@ -1,7 +1,7 @@
-import parseRate from './parseRate';
-import sellDeut from './deut';
-import sellCrystal from './crystal';
-import sellMetal from './metal';
+import parseRate from './parseRate.js';
+import sellDeut from './deut.js';
+import sellCrystal from './crystal.js';
+import sellMetal from './metal.js';
 
 const Trader = {
   parseRate,

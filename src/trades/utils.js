@@ -1,8 +1,7 @@
 export default function hasNaN(args) {
   let response = false;
   args.forEach((val) => {
-    // eslint-disable-next-line no-restricted-globals
-    if (isNaN(val)) {
+    if (Number.isNaN(Number(val))) {
       response = true;
     }
   });
