@@ -1,4 +1,4 @@
-import parseRate from './parseRate';
+import parseRate from './parseRate.js';
 
 describe('Parse rate given a resource and a rate', () => {
   it('Parse rate by selling deut', () => {

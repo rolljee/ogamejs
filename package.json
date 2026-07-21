@@ -1,17 +1,23 @@
 {
   "name": "ogamejs",
-  "version": "2.1.6",
+  "version": "0.0.0-development",
   "description": "",
-  "main": "build/index.js",
+  "type": "module",
+  "main": "src/index.js",
+  "exports": "./src/index.js",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
-    "start": "babel-node index.js",
     "commit": "git-cz",
-    "build": "babel src -d build",
     "lint": "eslint .",
-    "test": "jest"
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "release": "semantic-release"
   },
   "files": [
-    "build"
+    "src",
+    "!src/**/*.test.js"
   ],
   "repository": {
     "type": "git",
@@ -25,32 +31,17 @@
   ],
   "author": "n.riquelmebareiro@gmail.com",
   "license": "MIT",
-  "jest": {
-    "transform": {
-      "^.+\\.jsx?$": "babel-jest"
-    }
-  },
   "devDependencies": {
-    "@babel/cli": "^7.8.4",
-    "@babel/core": "^7.9.0",
-    "@babel/node": "^7.8.7",
-    "@babel/preset-env": "^7.9.5",
-    "babel-core": "^7.0.0-bridge.0",
-    "babel-jest": "^25.3.0",
-    "cz-conventional-changelog": "^3.1.0",
-    "eslint": "^6.8.0",
-    "eslint-config-airbnb": "^18.1.0",
-    "eslint-plugin-import": "^2.20.2",
-    "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-plugin-react": "^7.19.0",
-    "eslint-plugin-security": "^1.4.0",
-    "git-cz": "^4.3.1",
-    "jest": "^25.3.0",
-    "regenerator-runtime": "^0.13.5",
-    "standard-version": "^8.0.1"
-  },
-  "dependencies": {
-    "lodash": "^4.17.15"
+    "@eslint/js": "^9.19.0",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/git": "^10.0.1",
+    "cz-conventional-changelog": "^3.3.0",
+    "eslint": "^9.19.0",
+    "eslint-plugin-security": "^3.0.1",
+    "git-cz": "^4.9.0",
+    "globals": "^15.14.0",
+    "semantic-release": "^25.0.8",
+    "vitest": "^3.0.4"
   },
   "config": {
     "commitizen": {

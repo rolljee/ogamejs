@@ -72,7 +72,6 @@ function parseInfoCompteData(data) {
     lang,
   };
 
-  // eslint-disable-next-line no-restricted-syntax
   for (const planet of planets) {
     const [planetMetal, crystal, deut, temperatureText] = planet[0].split('/');
     const [temperature] = temperatureText.split('°');

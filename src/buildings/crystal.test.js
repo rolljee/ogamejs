@@ -1,5 +1,5 @@
-import getCrystalMine from './crystal';
-import BUILDINGS from '../models/buildings';
+import getCrystalMine from './crystal.js';
+import BUILDINGS from '../models/buildings.js';
 
 describe('Crystal mine informations should be correctly return when', () => {
   it('Level 30 is given and universe speed is 5 and position is 1', () => {

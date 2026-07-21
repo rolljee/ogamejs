@@ -1,4 +1,4 @@
-import getDebris from './getDebris';
+import getDebris from './getDebris.js';
 
 const Fleets = {
   getDebris,

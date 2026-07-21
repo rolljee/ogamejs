@@ -1,5 +1,5 @@
-import getMetalMine from './metal';
-import BUILDINGS from '../models/buildings';
+import getMetalMine from './metal.js';
+import BUILDINGS from '../models/buildings.js';
 
 describe('Metal mine informations should be correctly return when', () => {
   it('Level 10 is given and universe speed is 5', () => {
