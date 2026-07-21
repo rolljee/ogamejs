@@ -1,6 +1,6 @@
 {
   "name": "ogamejs",
-  "version": "0.0.0-development",
+  "version": "3.0.0",
   "description": "",
   "type": "module",
   "main": "src/index.js",

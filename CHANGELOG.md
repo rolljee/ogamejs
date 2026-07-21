@@ -1,3 +1,16 @@
+# [3.0.0](https://github.com/rolljee/ogamejs/compare/v2.1.3...v3.0.0) (2026-07-21)
+
+
+* feat!: modernize to Node 24 native ESM, Vitest and semantic-release ([4358f8d](https://github.com/rolljee/ogamejs/commit/4358f8d585f22e5351323d5eaf4b9218019d9a23))
+
+
+### BREAKING CHANGES
+
+* the package is now ESM-only and requires Node.js >= 24.
+CommonJS `require()` is no longer supported; consumers must use `import`.
+
+Co-Authored-By: Claude Opus 4.8 (1M context) <noreply@anthropic.com>
+
 # Changelog
 
 All notable changes to this project will be documented in this file. This project adheres to [Semantic Versioning](https://semver.org) and releases are automated with [semantic-release](https://github.com/semantic-release/semantic-release).
