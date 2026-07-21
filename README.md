@@ -1,235 +1,228 @@
-# A library for Ogame
+# ogamejs
 
-## Introduction
+A small, dependency-free JavaScript library that reproduces [OGame](https://gameforge.com/en-GB/play/ogame)'s core formulas: building costs and production, fleet debris, and the marketplace exchange rates.
 
-I always wanted an Ogame calculator that suited me, all those I could see online are, either too old in graphic terms, or it didn't work, it was calculating badly the number of resources to send for each exchange... 
+It ships only the math — no UI, no state — so you can build your own calculator, bot, or dashboard on top of it.
 
-So I decided to write a library in Javascript to create accessible methods to perform all calculations in a simple way for anyone who wants to create a graphical interface.
+## Requirements
 
-## Api documentation
+- **Node.js >= 24**
+- The package is **ESM-only** (use `import`, not `require`)
 
-All available methods will be listed below
+## Installation
 
-### Building
+```bash
+npm install ogamejs
+```
 
-* `getCrystalMine` Return information about the crystal mine given a specific level
+## Quick start
 
-``` javascript
-/**
- *
- * Return information about the crystal mine given a specific level
- * @param {object} mine The crystal mine base information
- * @param {number} targetLevel the crystal mine target level
- * @param {number} pos pos 1/2/3 have a 15/10/5%
- * @param {number} universeSpeed production factor is increased for some universe
- * @returns {Object} informations about the crystal mine at this specific level
- */
-function getCrystalMine(mine, targetLevel, pos, universeSpeed = 1) {
-    @return {
-        crystal: Number,
-        deut: Number,
-        energy: Number,
-        metal: Number,
-        production: Number
-    }
+```javascript
+import Ogame from 'ogamejs';
+
+// Reference data bundled with the library
+const { Buildings, Destroyable } = Ogame.models;
+
+// Level 10 metal mine on a universe with speed x5
+const metalBase = Buildings[1].base;
+const mine = Ogame.Building.getMetalMine(metalBase, 10, 5);
+// → { crystal: 576, deuterium: 0, energy: 259, metal: 2306, production: 3890 }
+
+// Debris field left by 100 light fighters (universe debris factor 0.3)
+const debris = Ogame.Fleets.getDebris(Destroyable[1], 100, 0.3);
+// → { metal: 90000, crystal: 30000 }
+
+// Sell 10 000 deuterium at the default 2:1.5:1 rate
+const trade = Ogame.Trader.sellDeut(10000);
+// → { metal: 12000, crystal: 6000 }
+```
+
+`Ogame` is the default export and exposes four namespaces:
+
+| Namespace         | Purpose                                                     |
+| ----------------- | ----------------------------------------------------------- |
+| `Ogame.Building`  | Building cost & production calculators                      |
+| `Ogame.Fleets`    | Fleet-related calculations                                  |
+| `Ogame.Trader`    | Marketplace exchange helpers                                |
+| `Ogame.models`    | Reference data (`Buildings`, `Destroyable`)                 |
+
+You can also import a single namespace directly:
+
+```javascript
+import Building from 'ogamejs/src/buildings/index.js';
+```
+
+## API reference
+
+### `Ogame.Building`
+
+Every mine/plant calculator takes a **base** object (from `Ogame.models.Buildings[id].base`) and returns the cost to reach `targetLevel` plus the resulting production.
+
+The returned object always has the same shape:
+
+```javascript
+{
+  metal: Number,       // metal cost to reach targetLevel
+  crystal: Number,     // crystal cost to reach targetLevel
+  deuterium: Number,   // deuterium cost to reach targetLevel
+  energy: Number,      // energy consumption at targetLevel
+  production: Number,  // resource (or energy) produced at targetLevel
 }
 ```
 
-* `getDeutSynth` Return information about the deuterium synth given a specific level
+#### `getMetalMine(base, targetLevel, universeSpeed = 1)`
 
-``` javascript
-/**
- *
- * Return information about the deuterium synth given a specific level
- * @param {object} mine The deut synth base information
- * @param {number} targetLevel the deuterieum synth target level
- * @param {number} avg planet average temperature - The lower the higher the prod is
- * @param {number} universeSpeed production factor is increased for some universe
- * @returns {Object} informations about the deut synth at this specific level
- */
-function getDeutSynth(mine, targetLevel, avg, universeSpeed = 1) {
-    @return {
-        crystal: Number,
-        deut: Number,
-        energy: Number,
-        metal: Number,
-        production: Number
-    }
+```javascript
+Ogame.Building.getMetalMine(Ogame.models.Buildings[1].base, 10, 5);
+// → { crystal: 576, deuterium: 0, energy: 259, metal: 2306, production: 3890 }
+```
+
+#### `getCrystalMine(base, targetLevel, pos, universeSpeed = 1)`
+
+`pos` is the planet position (1, 2 or 3), which grants a production bonus (positions closer to the sun produce more crystal).
+
+```javascript
+Ogame.Building.getCrystalMine(Ogame.models.Buildings[2].base, 10, 1, 5);
+// → { crystal: 1649, deuterium: 0, energy: 259, metal: 3298, production: 3371 }
+```
+
+#### `getDeutSynth(base, targetLevel, avg, universeSpeed = 1)`
+
+`avg` is the planet's average temperature — the colder the planet, the higher the deuterium production.
+
+```javascript
+Ogame.Building.getDeutSynth(Ogame.models.Buildings[3].base, 10, 40, 5);
+// → { crystal: 2883, deuterium: 0, energy: 518, metal: 8649, production: 1554 }
+```
+
+#### `getSolarPlant(base, targetLevel)`
+
+Produces energy, so `production` is an energy amount and `energy` (consumption) is `0`.
+
+```javascript
+Ogame.Building.getSolarPlant(Ogame.models.Buildings[4].base, 10);
+// → { crystal: 1153, deuterium: 0, energy: 0, metal: 2883, production: 518 }
+```
+
+#### `getFusionReactor(base, targetLevel, energyTech, universeSpeed = 1)`
+
+`energyTech` is the Energy Technology level. The returned object additionally includes `consumption` (deuterium burned per hour):
+
+```javascript
+{
+  metal: Number,
+  crystal: Number,
+  deuterium: Number,   // deuterium cost to build
+  energy: Number,      // always 0 (it produces energy)
+  consumption: Number, // deuterium consumed at targetLevel
+  production: Number,  // energy produced at targetLevel
 }
 ```
 
-* `getMetalMine` Return information about the metal mine given a specific level
+#### `parseInfoCompteData(data)`
 
-``` javascript
-/**
- *
- * Return information about the metal mine given a specific level
- * @param {object} mine The metal mine base information
- * @param {number} targetLevel
- * @param {number} universeSpeed production factor is increased for some universe
- * @returns {Object} informations about the metal mine at this specific level
- */
-function getMetalMine(mine, targetLevel, universeSpeed = 1) {
-    @return {
-        crystal: Number,
-        deut: Number,
-        energy: Number,
-        metal: Number,
-        production: Number
-    }
-}
+Parses the BBCode of the French OGame "infocompte" report into a structured object.
+
+```javascript
+const report = Ogame.Building.parseInfoCompteData(bbcodeString);
+// → {
+//   planets: [{ planet, metal, crystal, deut, temperature }, ...],
+//   production: { hourly: {...}, daily: {...}, weekly: {...} },
+//   points: { metal, crystal, deut, total },
+//   plasma: Number,
+//   universe: Number,
+//   lang: String,
+// }
 ```
 
-* `getSolarPlant` Return information about the solar plant given a specific level
+> Note: this parser expects a French-language report.
 
-``` javascript
-/**
- *
- * Return information about the solar plant given a specific level
- * @param {object} solarPlant The solarPlant base information
- * @param {number} targetLevel
- * @returns {Object} informations about the solar plant at this specific level
- */
-function getSolarPlant(solarPlant, targetLevel) {
-    @return {
-        crystal: Number,
-        deut: Number,
-        energy: Number,
-        metal: Number,
-        production: Number
-    }
-}
+### `Ogame.Fleets`
+
+#### `getDebris(ship, number, factor)`
+
+Returns the debris field generated when `number` ships (or defenses) of a given type are destroyed. `factor` is the universe's debris factor (e.g. `0.3` for 30%). Pass a full entry from `Ogame.models.Destroyable`.
+
+```javascript
+Ogame.Fleets.getDebris(Ogame.models.Destroyable[1], 100, 0.3);
+// → { metal: 90000, crystal: 30000 }
 ```
 
-* `getFusionReactor` Return information about the fusion reactor given a specific level
+### `Ogame.Trader`
 
-``` javascript
-/**
- *
- * Return information about the fusion reactor given a specific level
- * @param {object} reactor The fusion react base information
- * @param {number} targetLevel
- * @param {number} energyTech The technology energy level
- * @param {number} universeSpeed production factor is increased for some universe
- * @returns {Object} informations about the fusion reactor at this specific level
- */
+Marketplace helpers to convert one resource into the two others. Rates are expressed as a `metal:crystal:deut` string (default `'2:1.5:1'`), and percentages control how the traded amount is split between the two target resources. **All parameters are optional.**
 
-function getFusionReactor(reactor, targetLevel, energyTech, universeSpeed = 1) {
-    @return {
-        crystal: Number,
-        deut: Number,
-        energy: Number,
-        metal: Number,
-        production: Number
-    }
-}
+#### `sellDeut(deut = 0, percentM = 60, percentC = 40, rate = '2:1.5:1')`
+
+```javascript
+Ogame.Trader.sellDeut(10000);
+// → { metal: 12000, crystal: 6000 }
 ```
 
-* `parseInfoCompteData` Return the number of debris generated
+#### `sellMetal(metal = 0, percentD = 40, percentC = 60, rate = '2:1.5:1')`
 
-``` javascript
-/**
- *
- * Return information about the crystal mine given a specific level
- * @param {object} data The infocompte bb-code
- * @returns {Object} The parsed JSON object of infocompte
- */
-function parseInfoCompteData(data) {
-    @return {
-        planet: String,
-        metal: String,
-        crystal: String,
-        deut: String,
-        temperature: Number,
-    }
-}
+```javascript
+Ogame.Trader.sellMetal(10000);
+// → { deut: Number, crystal: Number }
 ```
 
-### Fleet
+#### `sellCrystal(crystal = 0, percentD = 40, percentM = 60, rate = '2:1.5:1')`
 
-* `getDebris` Return the number of debris generated
-
-``` javascript
-/**
- *
- * Returns the number of debris generated
- * @param {number} shipId The ship identifier
- * @param {number} number The number of ship
- * @param {number} factor The universe debris factor
- * @return {Object} The debris generated
- */
-getDebris(ship, number, facror) {
-    @return {
-        metal: Number,
-        crystal: Number,
-    }
-}
+```javascript
+Ogame.Trader.sellCrystal(10000);
+// → { deut: Number, metal: Number }
 ```
 
-### Trader
+#### `parseRate(rate = '2:1.5:1', type = 'deut')`
 
-* `sellDeut` Exchange of deuterium against `Metal` and `Crystal` 
+Normalizes a rate string relative to a reference resource (`'metal'`, `'crystal'` or `'deut'`). Throws if the rate is malformed.
 
-``` javascript
-// All params are optionnals
-// values placed here will be used if not specified
-sellDeut(deut = 0, percentM = 60, percentC = 40, rate = '2:1.5:1') {
-    @return {
-        metal: Number,
-        crystal: Number
-    }
-}
+```javascript
+Ogame.Trader.parseRate('3:2:1', 'deut');
+// → { rateMetal: 3, rateCrystal: 2, rateDeut: 1 }
 ```
 
-* `sellMetal` Exchange of deuterium against `Metal` and `Crystal` 
+### `Ogame.models`
 
-``` javascript
-// All params are optionnals
-// values placed here will be used if not specified
-sellMetal(metal = 0, percentD = 40, percentC = 60, rate = '2:1.5:1') {
-    @return {
-        deut: Number,
-        metal: Number
-    }
-}
+Frozen reference datasets you feed into the calculators.
+
+- **`Buildings`** — every building, keyed by in-game id, with its `name` and `base` stats.
+  See [`src/models/buildings.js`](./src/models/buildings.js).
+- **`Destroyable`** — every ship and defense, keyed by id, with structure, shield, attack, cost, rapid-fire table, etc.
+  See [`src/models/destroyable.js`](./src/models/destroyable.js).
+
+```javascript
+Ogame.models.Buildings[1];
+// → { name: 'Mine de métal', base: { production, consumption, metal, crystal, deutrium, energy } }
+
+Ogame.models.Destroyable[1];
+// → { name: 'chasseur léger', structure, shield, attack, cost: { metal, crystal, deut }, ... }
 ```
 
-* `sellCrystal` Exchange of deuterium against `Metal` and `Crystal` 
+## Development
 
-``` javascript
-// All params are optionnals
-// values placed here will be used if not specified
-sellCrystal(crystal = 0, percentD = 40, percentM = 60, rate = '2:1.5:1') {
-    @return {
-        deut: Number,
-        metal: Number
-    }
-}
+```bash
+npm install      # install dependencies
+npm test         # run the test suite (Vitest)
+npm run test:watch
+npm run lint     # ESLint (flat config)
 ```
 
-* `parseRate()` Parse the exchange rate
+The library is written in native ESM and published straight from `src/` — there is no build step.
 
-``` javascript
-// All params are optionnals
-// values placed here will be used if not specified
-parseRate(rate = '2:1.5:1') {
-    @return {
-        rateDeut: Number,
-        rateMetal: Number,
-        rateCrystal: Number
-    };
-}
-```
+## Releases
 
-### Models
+Releases are fully automated with [semantic-release](https://github.com/semantic-release/semantic-release), driven by [Conventional Commits](https://www.conventionalcommits.org/):
 
-Listed below are categories of Buildings / Ships / Defenses
+- pushes to `master` publish a stable release,
+- pushes to `develop` publish a pre-release.
 
-#### Buildings
+The version, `CHANGELOG.md`, git tag, GitHub release and npm publish (via OIDC trusted publishing) are all handled by CI. Do not bump the version manually.
 
-[Buildings](./src/models/buildings.js) Here you will find all listed Buildings in the game
+## Contributing
 
-#### Destroyable
+See [CONTRIBUTING.md](./CONTRIBUTING.md).
 
-[Destroyable](./src/models/destroyable.js) Here you will find all listed Ships / Defense in the game
+## License
 
+[MIT](./LICENSE.md)
