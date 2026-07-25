@@ -80,3 +80,7 @@ typings/
 .dynamodb/
 
 build/
+
+# Generated TypeScript declarations, at the root only — a bare `types/` would
+# also swallow .github/actions/types/
+/types/

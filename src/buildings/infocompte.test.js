@@ -1,8 +1,6 @@
 import parseInfoCompteData from './infocompte.js';
 
-describe('Infocompte informations should be correctly return when', () => {
-  it('Version is ', () => {
-    const params = `
+const frenchReport = `
       Niveau des mines du joueur Rolljee ( s165-fr ) le 07/04/2020, 16:40:32 :
 
       Planète 01 : Métal 36 / Cristal 31 / Deutérium 31 / -94°C
@@ -31,41 +29,62 @@ describe('Infocompte informations should be correctly return when', () => {
 
       Export with Infocompte v7.0.10
     `;
-    const response = parseInfoCompteData(params);
+
+const englishReport = `
+      Mine levels of player Rolljee ( s165-en ) on 07/04/2020, 16:40:32 :
+
+      Planet 01 : Metal 36 / Crystal 31 / Deuterium 31 / -94°C
+      Planet 02 : Metal 20 / Crystal 18 / Deuterium 15 / 56°C
+
+      Points in metal mines : 4.832.457
+      Points in crystal mines : 2.807.321
+      Points in deut mines : 3.343.660
+      Plasma Technology : 15
+
+      Par heure : 2.292.692 Metal / 726.693 Crystal / 718.186 Deuterium
+
+      Per hour : 2.292.692 Metal / 726.693 Crystal / 718.186 Deuterium
+
+      Export with Infocompte v7.0.10
+    `;
+
+describe('Infocompte informations should be correctly return when', () => {
+  it('A French report is given', () => {
+    const response = parseInfoCompteData(frenchReport);
     expect(response).toEqual({
       planets: [
         {
-          planet: 'Planète 01', metal: '36', crystal: '31', deut: '31', temperature: -94,
+          planet: 'Planète 01', metal: 36, crystal: 31, deut: 31, temperature: -94,
         },
         {
-          planet: 'Planète 02', metal: '36', crystal: '31', deut: '31', temperature: -95,
+          planet: 'Planète 02', metal: 36, crystal: 31, deut: 31, temperature: -95,
         },
         {
-          planet: 'Planète 03', metal: '36', crystal: '31', deut: '31', temperature: 56,
+          planet: 'Planète 03', metal: 36, crystal: 31, deut: 31, temperature: 56,
         },
         {
-          planet: 'Planète 04', metal: '36', crystal: '31', deut: '31', temperature: -118,
+          planet: 'Planète 04', metal: 36, crystal: 31, deut: 31, temperature: -118,
         },
         {
-          planet: 'Planète 05', metal: '36', crystal: '31', deut: '31', temperature: -122,
+          planet: 'Planète 05', metal: 36, crystal: 31, deut: 31, temperature: -122,
         },
         {
-          planet: 'Planète 06', metal: '36', crystal: '31', deut: '31', temperature: -97,
+          planet: 'Planète 06', metal: 36, crystal: 31, deut: 31, temperature: -97,
         },
         {
-          planet: 'Planète 07', metal: '36', crystal: '31', deut: '31', temperature: -96,
+          planet: 'Planète 07', metal: 36, crystal: 31, deut: 31, temperature: -96,
         },
         {
-          planet: 'Planète 08', metal: '36', crystal: '31', deut: '33', temperature: -108,
+          planet: 'Planète 08', metal: 36, crystal: 31, deut: 33, temperature: -108,
         },
         {
-          planet: 'Planète 09', metal: '38', crystal: '31', deut: '34', temperature: -103,
+          planet: 'Planète 09', metal: 38, crystal: 31, deut: 34, temperature: -103,
         },
         {
-          planet: 'Planète 10', metal: '38', crystal: '31', deut: '34', temperature: -76,
+          planet: 'Planète 10', metal: 38, crystal: 31, deut: 34, temperature: -76,
         },
         {
-          planet: 'Planète 11', metal: '38', crystal: '31', deut: '34', temperature: -116,
+          planet: 'Planète 11', metal: 38, crystal: 31, deut: 34, temperature: -116,
         },
       ],
       production: {
@@ -80,5 +99,59 @@ describe('Infocompte informations should be correctly return when', () => {
       universe: 165,
       lang: 'fr',
     });
+  });
+
+  it('An English report is given', () => {
+    const response = parseInfoCompteData(englishReport);
+
+    expect(response.lang).toBe('en');
+    expect(response.universe).toBe(165);
+    expect(response.plasma).toBe(15);
+    expect(response.planets).toEqual([
+      {
+        planet: 'Planet 01', metal: 36, crystal: 31, deut: 31, temperature: -94,
+      },
+      {
+        planet: 'Planet 02', metal: 20, crystal: 18, deut: 15, temperature: 56,
+      },
+    ]);
+    expect(response.production.hourly).toEqual({
+      metal: 2292692, crystal: 726693, deut: 718186,
+    });
+    expect(response.points.total).toBe(10983438);
+  });
+
+  it('A locale is forced through the options', () => {
+    const response = parseInfoCompteData(frenchReport, { locale: 'fr' });
+    expect(response.planets).toHaveLength(11);
+  });
+
+  it('Custom labels are given for an unsupported language', () => {
+    const labels = {
+      planet: 'Planet',
+      metalPoints: 'Points in metal mines',
+      crystalPoints: 'Points in crystal mines',
+      deutPoints: 'Points in deut mines',
+      plasma: 'Plasma Technology',
+      hourly: 'Per hour',
+    };
+    const response = parseInfoCompteData(englishReport.replace('s165-en', '165-xx'), { labels });
+    expect(response.planets).toHaveLength(2);
+  });
+});
+
+describe('Infocompte parsing should throw when', () => {
+  it('No data is given', () => {
+    expect(() => parseInfoCompteData('')).toThrow('data must be a non empty string');
+  });
+
+  it('The universe header is missing', () => {
+    expect(() => parseInfoCompteData('Technologie Plasma : 15'))
+      .toThrow('could not find the universe and language header in the report');
+  });
+
+  it('A section is missing', () => {
+    const truncated = frenchReport.replace('Technologie Plasma : 15', '');
+    expect(() => parseInfoCompteData(truncated)).toThrow('the plasma technology level');
   });
 });

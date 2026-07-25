@@ -1,22 +1,67 @@
 {
   "name": "ogamejs",
   "version": "3.0.0",
-  "description": "",
+  "description": "OGame formulas as a dependency-free ESM library: building and research costs, production, build times, fleet debris and marketplace rates.",
   "type": "module",
   "main": "src/index.js",
-  "exports": "./src/index.js",
+  "sideEffects": false,
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "default": "./src/index.js"
+    },
+    "./buildings": {
+      "types": "./types/buildings/index.d.ts",
+      "default": "./src/buildings/index.js"
+    },
+    "./fleets": {
+      "types": "./types/fleets/index.d.ts",
+      "default": "./src/fleets/index.js"
+    },
+    "./research": {
+      "types": "./types/research/index.d.ts",
+      "default": "./src/research/index.js"
+    },
+    "./trades": {
+      "types": "./types/trades/index.d.ts",
+      "default": "./src/trades/index.js"
+    },
+    "./i18n": {
+      "types": "./types/i18n.d.ts",
+      "default": "./src/i18n.js"
+    },
+    "./types": {
+      "types": "./types/types.d.ts",
+      "default": "./src/types.js"
+    },
+    "./models/buildings": {
+      "types": "./types/models/buildings.d.ts",
+      "default": "./src/models/buildings.js"
+    },
+    "./models/destroyable": {
+      "types": "./types/models/destroyable.d.ts",
+      "default": "./src/models/destroyable.js"
+    },
+    "./models/research": {
+      "types": "./types/models/research.d.ts",
+      "default": "./src/models/research.js"
+    }
+  },
   "engines": {
     "node": ">=24"
   },
   "scripts": {
     "commit": "git-cz",
     "lint": "eslint .",
+    "types": "tsc",
+    "prepack": "npm run types",
     "test": "vitest run",
     "test:watch": "vitest",
     "release": "semantic-release"
   },
   "files": [
     "src",
+    "types",
     "!src/**/*.test.js"
   ],
   "repository": {
@@ -41,11 +86,13 @@
     "git-cz": "^4.9.0",
     "globals": "^15.14.0",
     "semantic-release": "^25.0.8",
+    "typescript": "^7.0.2",
     "vitest": "^3.0.4"
   },
   "config": {
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  }
+  },
+  "types": "./types/index.d.ts"
 }

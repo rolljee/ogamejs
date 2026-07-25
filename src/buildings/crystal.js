@@ -1,11 +1,10 @@
-function getPositionFactor(pos) {
-  const factor = {
-    1: 1.3,
-    2: 1.225,
-    3: 1.15,
-  };
+import buildingInfo from './info.js';
 
-  return factor[Number.parseInt(pos, 10)] ? factor[Number.parseInt(pos, 10)] : 1;
+// Positions 1, 2 and 3 give a 30%, 22.5% and 15% crystal production bonus.
+const POSITION_FACTOR = { 1: 1.3, 2: 1.225, 3: 1.15 };
+
+function getPositionFactor(pos) {
+  return POSITION_FACTOR[Number.parseInt(pos, 10)] ?? 1;
 }
 
 function getMineProduction(baseProduction, targetLevel, pos, universeSpeed) {
@@ -15,39 +14,22 @@ function getMineProduction(baseProduction, targetLevel, pos, universeSpeed) {
   return Math.floor(baseProduction * targetLevel * levelFactor * universeSpeed * positionFactor);
 }
 
-function getEnergyCost(baseEnergyCost, targetLevel) {
-  const level = targetLevel;
-  const levelFactor = 1.1 ** level;
-  return Math.floor(baseEnergyCost * level * levelFactor);
-}
-
-function getMetalCost(baseMetalCost, targetLevel) {
-  const level = targetLevel - 1;
-  return Math.floor(baseMetalCost * 1.6 ** level);
-}
-
-function getCrystalCost(baseCrystalCost, targetLevel) {
-  const level = targetLevel - 1;
-  return Math.floor(baseCrystalCost * 1.6 ** level);
-}
-
 /**
  *
- * Return information about the crystal mine given a specific level
- * @param {object} mine The crystal mine base information
- * @param {number} targetLevel the crystal mine target level
- * @param {number} pos pos 1/2/3 have a 15/10/5%
- * @param {number} universeSpeed production factor is increased for some universe
- * @returns {Object} informations about the crystal mine at this specific level
+ * Return information about the crystal mine at a given level
+ * @param {import('../types.js').BuildingEntry} mine The crystal mine entry, `Buildings[2]`
+ * @param {number} targetLevel The level to reach, >= 1
+ * @param {number} pos The planet position, 1, 2 and 3 produce more crystal
+ * @param {number} [universeSpeed] Production is increased on faster universes
+ * @returns {import('../types.js').BuildingInfo} Cost, consumption and production at that level
  */
 function getCrystalMine(mine, targetLevel, pos, universeSpeed = 1) {
-  return {
-    crystal: getCrystalCost(mine.crystal, targetLevel),
-    deuterium: 0,
-    energy: getEnergyCost(mine.energy, targetLevel),
-    metal: getMetalCost(mine.metal, targetLevel),
-    production: getMineProduction(mine.production, targetLevel, pos, universeSpeed),
-  };
+  return buildingInfo(
+    mine,
+    targetLevel,
+    universeSpeed,
+    (base) => getMineProduction(base.production, targetLevel, pos, universeSpeed),
+  );
 }
 
 export default getCrystalMine;

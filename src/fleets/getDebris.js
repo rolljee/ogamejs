@@ -1,19 +1,20 @@
 /**
  *
- * Returns the number of debris generated
- * @param {number} shipId The ship identifier
- * @param {number} number The number of ship
- * @param {number} factor The universe debris factor
- * @return {Object} The debris generated
+ * Return the debris field left behind by destroyed ships or defenses
+ * @param {import('../types.js').DestroyableEntry} ship An entry of models/destroyable.js
+ * @param {number} number The number of destroyed units
+ * @param {number} factor The universe debris factor, e.g. 0.3 for 30%
+ * @param {number} [deuteriumFactor] The universe deuterium debris factor, 0 on most universes
+ * @return {import('../types.js').Resources} The debris generated
  */
-function getDebris(ship, number, factor) {
+function getDebris(ship, number, factor, deuteriumFactor = 0) {
   const { cost } = ship;
-  const metalDebris = cost.metal ? cost.metal * factor : 0;
-  const crystalDebris = cost.crystal ? cost.crystal * factor : 0;
+  const deuteriumCost = cost.deuterium ?? cost.deut ?? 0;
 
   return {
-    metal: metalDebris * number,
-    crystal: crystalDebris * number,
+    metal: (cost.metal ?? 0) * factor * number,
+    crystal: (cost.crystal ?? 0) * factor * number,
+    deuterium: deuteriumCost * deuteriumFactor * number,
   };
 }
 

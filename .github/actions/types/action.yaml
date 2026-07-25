@@ -1,0 +1,10 @@
+name: Types
+description: Type check the sources and build the declaration files
+
+runs:
+  using: "composite"
+  steps:
+    - run: npm ci
+      shell: bash
+    - run: npm run types
+      shell: bash

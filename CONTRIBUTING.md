@@ -20,12 +20,24 @@ Requires **Node.js >= 24** (see `.nvmrc`).
    ```bash
    npm run lint
    npm test
+   npm run types   # type checks the JSDoc and writes types/
    ```
 4. Commit using **[Conventional Commits](https://www.conventionalcommits.org/)** — the version and changelog are derived from them. You can use the interactive helper:
    ```bash
    npm run commit
    ```
-5. Open a pull request against `master`. CI runs lint and tests on every PR.
+5. Open a pull request against `master`. CI runs lint, the type check and the tests on every PR.
+
+## Adding game data
+
+The models in `src/models/` are covered by `src/models/models.test.js`, which
+asserts the invariants every entry must hold — a complete `base`, a known
+category and drive, rapid-fire targets that exist, `structure` equal to the metal
+plus crystal cost, no duplicate `ogameId`. Adding an entry that breaks one of
+those fails CI, so start there when the shape is unclear.
+
+Both `names.en` and `names.fr` are required; a missing translation fails
+`src/i18n.test.js`.
 
 ## Commit conventions
 

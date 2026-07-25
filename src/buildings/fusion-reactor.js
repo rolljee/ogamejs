@@ -1,50 +1,35 @@
+import buildingInfo from './info.js';
+
+// Energy technology makes each reactor level a little more efficient.
 function getEnergyFactor(energyTech) {
   return 1.05 + 0.01 * energyTech;
 }
 
 function getEnergyProduction(baseProduction, targetLevel, energyTech) {
   const factor = getEnergyFactor(energyTech) ** targetLevel;
+
   return Math.floor(baseProduction * targetLevel * factor);
-}
-
-function getMetalCost(baseMetalCost, targetLevel) {
-  const level = targetLevel - 1;
-  return Math.floor(baseMetalCost * 1.8 ** level);
-}
-
-function getCrystalCost(baseCrystalCost, targetLevel) {
-  const level = targetLevel - 1;
-  return Math.floor(baseCrystalCost * 1.8 ** level);
-}
-
-function getDeuteriumCost(baseDeuteriumCost, targetLevel) {
-  const level = targetLevel - 1;
-  return Math.floor(baseDeuteriumCost * 1.8 ** level);
-}
-
-function getConsumption(baseConsumption, targetLevel, universeSpeed) {
-  const levelFactor = 1.1 ** targetLevel;
-  return Math.floor(baseConsumption * targetLevel * levelFactor * universeSpeed);
 }
 
 /**
  *
- * Return information about the fusion reactor given a specific level
- * @param {object} reactor The fusion react base information
- * @param {number} targetLevel
- * @param {number} energyTech The technology energy level
- * @param {number} universeSpeed production factor is increased for some universe
- * @returns {Object} informations about the fusion reactor at this specific level
+ * Return information about the fusion reactor at a given level
+ *
+ * `deuteriumConsumption` is the deuterium the reactor burns per hour, and
+ * `production` the energy it delivers.
+ * @param {import('../types.js').BuildingEntry} reactor The fusion reactor entry, `Buildings[5]`
+ * @param {number} targetLevel The level to reach, >= 1
+ * @param {number} energyTech The Energy Technology level
+ * @param {number} [universeSpeed] Consumption is increased on faster universes
+ * @returns {import('../types.js').BuildingInfo} Cost, deuterium consumption and energy production
  */
 function getFusionReactor(reactor, targetLevel, energyTech, universeSpeed = 1) {
-  return {
-    crystal: getCrystalCost(reactor.crystal, targetLevel),
-    energy: 0,
-    consumption: getConsumption(reactor.consumption, targetLevel, universeSpeed),
-    deuterium: getDeuteriumCost(reactor.deutrium, targetLevel),
-    metal: getMetalCost(reactor.metal, targetLevel),
-    production: getEnergyProduction(reactor.production, targetLevel, energyTech),
-  };
+  return buildingInfo(
+    reactor,
+    targetLevel,
+    universeSpeed,
+    (base) => getEnergyProduction(base.production, targetLevel, energyTech),
+  );
 }
 
 export default getFusionReactor;
