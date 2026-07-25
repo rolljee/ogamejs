@@ -1,6 +1,6 @@
 {
   "name": "ogamejs",
-  "version": "3.0.0",
+  "version": "4.0.0",
   "description": "OGame formulas as a dependency-free ESM library: building and research costs, production, build times, fleet debris and marketplace rates.",
   "type": "module",
   "main": "src/index.js",

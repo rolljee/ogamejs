@@ -1,3 +1,26 @@
+# [4.0.0](https://github.com/rolljee/ogamejs/compare/v3.0.0...v4.0.0) (2026-07-25)
+
+
+* feat!: ship types, complete the models, and add production, flight and combat ([af69541](https://github.com/rolljee/ogamejs/commit/af69541102c27461d88a627224bce4d7181e6be7))
+
+
+### BREAKING CHANGES
+
+* mine and plant calculators now take `Buildings[id]` rather
+than `Buildings[id].base`, and return `energyCost`/`energyConsumption`/
+`deuteriumConsumption` instead of `energy`/`consumption`.
+* model fields renamed — `entry.name` to `entry.names.fr`,
+`base.deutrium` to `base.deuterium`, `base.energy` to `base.energyConsumption`
+or `base.energyCost`, `base.consumption` to `base.deuteriumConsumption`,
+`fret` to `cargo`, `cost.deut` to `cost.deuterium`, and `deutCost` to
+`fuelConsumption` with corrected values (they were half the in-game figure).
+* parseInfoCompteData returns planet mine levels as numbers
+instead of strings, and getDebris returns an extra `deuterium` key.
+
+See MIGRATION.md for the full upgrade path.
+
+Co-Authored-By: Claude Opus 5 (1M context) <noreply@anthropic.com>
+
 # [3.0.0](https://github.com/rolljee/ogamejs/compare/v2.1.3...v3.0.0) (2026-07-21)
 
 
