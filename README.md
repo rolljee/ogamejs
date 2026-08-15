@@ -366,7 +366,7 @@ Ogame.Trader.sellCrystal(10000); // → { deut, metal }
 
 #### `parseRate(rate = '2:1.5:1', type = 'deut')`
 
-Normalizes a rate relative to a reference resource (`'metal'`, `'crystal'` or `'deut'`). Throws if the rate is malformed.
+Normalizes a rate relative to a reference resource (`'metal'`, `'crystal'` or `'deut'`). Throws if the rate is malformed — that includes a term that is not a number, but also a `0`, an empty one (`'2::1'`) and a negative one, none of which describe a trade.
 
 ```javascript
 Ogame.Trader.parseRate('3:2:1', 'deut');

@@ -1,4 +1,4 @@
-import hasNaN from './utils.js';
+import isUsableRate from './utils.js';
 
 function extract(rate, type) {
   let res = {};
@@ -46,7 +46,10 @@ export default function parseRate(rate = '2:1.5:1', type = 'deut') {
 
   const res = extract(rate, type);
 
-  if (hasNaN(Object.values(res))) {
+  // Checked after normalizing rather than on the raw terms: whatever makes a
+  // rate unusable — a term that is not a number, `0`, empty, negative — shows
+  // up here as a NaN, an Infinity, a 0 or a negative ratio.
+  if (!isUsableRate(Object.values(res))) {
     throw new Error('rate not parsed correctly');
   }
 
