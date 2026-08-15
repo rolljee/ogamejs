@@ -1,3 +1,10 @@
+## [4.0.2](https://github.com/rolljee/ogamejs/compare/v4.0.1...v4.0.2) (2026-08-15)
+
+
+### Bug Fixes
+
+* **trades:** reject rate terms that cannot describe a trade ([9047f07](https://github.com/rolljee/ogamejs/commit/9047f073a9c9295fb6f24ce138964719f619f0fb))
+
 ## [4.0.1](https://github.com/rolljee/ogamejs/compare/v4.0.0...v4.0.1) (2026-08-15)
 
 
