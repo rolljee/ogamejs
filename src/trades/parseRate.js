@@ -20,9 +20,14 @@ function extract(rate, type) {
       rateDeut: deut / crystal,
     };
   } else if (type === 'deut') {
+    // Like the two branches above: express the other terms in units of the one
+    // being sold, so its own term becomes 1. Reading `metal` and `crystal` raw
+    // here only happened to work because rates are usually written against 1
+    // deuterium — `4:3:2` is the same rate as `2:1.5:1`, but used to pay twice
+    // as much for the very same deuterium.
     res = {
-      rateMetal: metal,
-      rateCrystal: crystal,
+      rateMetal: metal / deut,
+      rateCrystal: crystal / deut,
       rateDeut: 1,
     };
   } else {

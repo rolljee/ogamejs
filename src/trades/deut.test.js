@@ -6,4 +6,11 @@ describe('A deut trade', () => {
     expect(metal).toBe(100000);
     expect(crystal).toBe(75000);
   });
+
+  // `4:3:2` is the same rate as `2:1.5:1`; it used to pay twice as much.
+  it('Sells the same deut for the same amount at an equivalent rate', () => {
+    const { metal, crystal } = sellDeut(100000, 50, 50, '4:3:2');
+    expect(metal).toBe(100000);
+    expect(crystal).toBe(75000);
+  });
 });
