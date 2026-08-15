@@ -55,4 +55,33 @@ describe('Parse rate given a resource and a rate', () => {
       expect(e).toEqual(new Error('rate not parsed correctly'));
     }
   });
+
+  // These three used to come back as numbers: a zero term divided into gave
+  // `Infinity`, an empty term parsed to 0, and a negative one flipped the sign
+  // of the trade. All three look like answers downstream.
+  it('Should refuse a zero term rather than return Infinity', () => {
+    ['metal', 'crystal', 'deut'].forEach((type) => {
+      expect(() => parseRate('0:1.5:1', type)).toThrow('rate not parsed correctly');
+      expect(() => parseRate('2:0:1', type)).toThrow('rate not parsed correctly');
+      expect(() => parseRate('2:1.5:0', type)).toThrow('rate not parsed correctly');
+    });
+  });
+
+  it('Should refuse an empty term rather than read it as zero', () => {
+    expect(() => parseRate('2::1', 'metal')).toThrow('rate not parsed correctly');
+    expect(() => parseRate('2:1.5:', 'deut')).toThrow('rate not parsed correctly');
+  });
+
+  it('Should refuse a negative term', () => {
+    expect(() => parseRate('-2:1.5:1', 'deut')).toThrow('rate not parsed correctly');
+    expect(() => parseRate('2:-1.5:1', 'metal')).toThrow('rate not parsed correctly');
+  });
+
+  // The type check runs before the terms are judged, so a bad reference
+  // resource still says which one it is.
+  it('Should still name an unknown reference resource', () => {
+    expect(() => parseRate('0:0:0', 'gold')).toThrow(
+      'gold is not part of the game, try one of metal, crystal, deut',
+    );
+  });
 });
