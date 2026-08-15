@@ -1,3 +1,10 @@
+## [4.0.1](https://github.com/rolljee/ogamejs/compare/v4.0.0...v4.0.1) (2026-08-15)
+
+
+### Bug Fixes
+
+* **trades:** normalize the rate against deuterium like the other resources ([dd3d864](https://github.com/rolljee/ogamejs/commit/dd3d864ee2b67919e3e27cee377ccbd6c4337789))
+
 # [4.0.0](https://github.com/rolljee/ogamejs/compare/v3.0.0...v4.0.0) (2026-07-25)
 
 
