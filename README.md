@@ -373,6 +373,13 @@ Ogame.Trader.parseRate('3:2:1', 'deut');
 // → { rateMetal: 3, rateCrystal: 2, rateDeut: 1 }
 ```
 
+The reference term always comes back as `1`, so a rate and any multiple of it are the same rate, whichever resource you sell:
+
+```javascript
+Ogame.Trader.parseRate('4:3:2', 'deut');
+// → { rateMetal: 2, rateCrystal: 1.5, rateDeut: 1 }  — same as '2:1.5:1'
+```
+
 ### `Ogame.i18n`
 
 Every model entry carries `names: { en, fr }`.
