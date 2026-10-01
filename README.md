@@ -354,6 +354,59 @@ const winRate = runs.filter((run) => run.winner === 'attacker').length / runs.le
 
 Destroyed defenses are left out of the debris field unless you pass `defenseDebris: true`. Defense repair after a battle is not modelled.
 
+#### `getMoonbreakChance(moonSize, fleets)` / `getMoonbreakLosses(moonSize, fleets)` / `getMoonbreakWaves(rip)`
+
+A moon destruction with Deathstars. `fleets` lists each attacker's Deathstars in firing order; each attacker spreads them over 6 waves, the extra ships in the first ones, and the moon is gone as soon as one wave succeeds.
+
+```javascript
+Ogame.Fleets.getMoonbreakChance(8944, [100, 80]);
+// → 0.9409…  (94.09 %)
+Ogame.Fleets.getMoonbreakLosses(8944, [100]);
+// → { mean: 27.78…, sigma: 4.33…,
+//     bands: [{ confidence: 68, min: 23.45…, max: 32.11… }, { confidence: 95, … }, { confidence: 99, … }] }
+Ogame.Fleets.getMoonbreakWaves(100);
+// → [17, 17, 17, 17, 16, 16]
+```
+
+The values are unrounded. The loss bands are a gaussian approximation around the expected losses.
+
+#### `getExpeditionMaxFind(options)` / `getExpeditionFindBase(topScore)`
+
+The largest metal find of one expedition. A Discoverer's find is `base × (1 + explorerBonus × (1 + lifeformExplorerBonus)) × economySpeed`; other classes get `base` alone. A Pathfinder doubles it and the lifeform expedition resource bonus multiplies it.
+
+```javascript
+Ogame.Fleets.getExpeditionMaxFind({
+  topScore: 2e9,              // points of the universe's top player
+  economySpeed: 10,
+  explorer: true,             // Discoverer class
+  pathfinder: true,
+  explorerBonus: 0.5,         // serverData `explorerBonusIncreasedExpeditionOutcome`
+  lifeformExplorerBonus: 0,   // lifeform Discoverer enhancement, 0.2 for 20 %
+  lifeformResourceBonus: 0,   // lifeform expedition resource bonus, 0.2 for 20 %
+});
+// → 150000000
+```
+
+The lifeform bonuses are the totals the in-game lifeform bonus page shows, as fractions.
+
+#### `getCargoCapacity(ship, options = {})`
+
+One ship's cargo with its bonuses, all shares of the base cargo that add up: Hyperspace Technology (`hyperspaceMultiplier` %, 5 by default, per level) plus any other `bonus` (Collector class, lifeform…).
+
+```javascript
+Ogame.Fleets.getCargoCapacity(Ogame.models.Destroyable[12], { hyperspaceLevel: 20, bonus: 0.25 });
+// → 56250
+```
+
+#### `getMoonLockShips(ship, debrisFactor, threshold = 2000000)`
+
+How many ships to destroy on a position to reach the 2 000 000 debris that give a moon its maximum 20 % chance.
+
+```javascript
+Ogame.Fleets.getMoonLockShips(Ogame.models.Destroyable[1], 0.5);
+// → 1000
+```
+
 ### `Ogame.Trader`
 
 Converts one resource into the two others. Rates are a `metal:crystal:deut` string (default `'2:1.5:1'`), and the percentages split the traded amount between the two target resources. **All parameters are optional.**
@@ -464,7 +517,7 @@ import type { BuildingEntry, FleetEntry, Coordinates } from 'ogamejs/types';
 
 Stated plainly, so you know what you are not getting:
 
-- **Lifeforms** (the 2021 expansion) are not modelled — neither their buildings nor their technologies. This is a data problem, not a code one: the tables run to roughly 120 entries and we would rather have them sourced than guessed.
+- **Lifeforms** (the 2021 expansion) are not modelled — neither their buildings nor their technologies. This is a data problem, not a code one: the tables run to roughly 120 entries and we would rather have them sourced than guessed. Where a formula needs a lifeform bonus (expeditions, cargo), it takes the total the in-game bonus page shows.
 - **Drive upgrade values** for the three ships that switch drive (small cargo, recycler, bomber) come from community tables rather than a first-party source. The speeds are solid; the post-switch fuel figures deserve an in-game check.
 - **Defense repair** after a battle is not simulated, and neither are moon-creation odds.
 - Officers other than the geologist, and alliance classes, are not modelled in the production bonuses.
