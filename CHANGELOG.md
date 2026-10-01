@@ -1,3 +1,10 @@
+# [4.1.0](https://github.com/rolljee/ogamejs/compare/v4.0.2...v4.1.0) (2026-10-01)
+
+
+### Features
+
+* **fleets:** add moonbreak, expedition and moon-lock formulas ([dcc1969](https://github.com/rolljee/ogamejs/commit/dcc1969e50068ac61bc0f459c6cd51d6148c696c))
+
 ## [4.0.2](https://github.com/rolljee/ogamejs/compare/v4.0.1...v4.0.2) (2026-08-15)
 
 
