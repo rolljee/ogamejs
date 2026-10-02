@@ -83,6 +83,32 @@ describe('A battle should', () => {
   });
 });
 
+describe('Explosions should', () => {
+  it('Be rolled on every hit, not once at the end of the round', () => {
+    // Two battleships fire 1000 at a cruiser (2700 hull, 50 shield). The first
+    // hit leaves it at 65% (35% to explode), the second at 28% (72%). Rolled on
+    // each hit it blows up in round one 82% of the time, rolled once at the
+    // end of the round only 72% of the time.
+    const runs = 2000;
+    let exploded = 0;
+
+    for (let seed = 1; seed <= runs; seed += 1) {
+      const result = simulateCombat(
+        { fleet: [{ ship: DESTROYABLE[4], count: 2 }] },
+        { fleet: [{ ship: DESTROYABLE[3], count: 1 }] },
+        { seed },
+      );
+
+      if (result.rounds === 1 && result.winner === 'attacker') {
+        exploded += 1;
+      }
+    }
+
+    expect(exploded / runs).toBeGreaterThan(0.78);
+    expect(exploded / runs).toBeLessThan(0.86);
+  });
+});
+
 describe('Technologies should matter, so that', () => {
   const run = (techs, seed) => simulateCombat(
     { fleet: fighters(100), techs },

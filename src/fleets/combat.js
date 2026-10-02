@@ -12,7 +12,7 @@ const MAX_SHOTS = 10000;
 /** A shot weaker than this share of the target shield simply bounces off. */
 const BOUNCE_RATIO = 0.01;
 
-/** Below that share of its hull, a unit may explode at the end of the round. */
+/** Below that share of its hull, a unit hit by a shot may explode on the spot. */
 const EXPLOSION_THRESHOLD = 0.7;
 
 /** Rapid-fire tables point at library ids, so we need the way back. */
@@ -106,6 +106,10 @@ function rapidFireAgainst(unit, target) {
 /**
  * One unit fires at a random enemy, then keeps firing while its rapid-fire
  * bonus rolls in its favour.
+ *
+ * Every shot that gets through may blow up a target left under 70% of its
+ * hull, so a unit hit several times in a round gets several rolls. A wrecked
+ * unit stays a target until the end of the round, and shots on it are wasted.
  */
 function fire(unit, enemies, random) {
   for (let shots = 0; shots < MAX_SHOTS; shots += 1) {
@@ -117,12 +121,18 @@ function fire(unit, enemies, random) {
     const damage = unit.attack;
 
     // A shot too weak to dent the shield bounces off without doing anything.
-    if (damage >= target.shield * BOUNCE_RATIO) {
+    if (target.hull > 0 && damage >= target.shield * BOUNCE_RATIO) {
       if (damage <= target.shield) {
         target.shield -= damage;
       } else {
         target.hull -= damage - target.shield;
         target.shield = 0;
+      }
+
+      const integrity = target.hull / target.maxHull;
+
+      if (target.hull > 0 && integrity < EXPLOSION_THRESHOLD && random() < 1 - integrity) {
+        target.hull = 0;
       }
     }
 
@@ -135,21 +145,12 @@ function fire(unit, enemies, random) {
   }
 }
 
-/**
- * Destroyed units are removed, damaged ones may explode, survivors get their
- * shield back for the next round.
- */
-function endRound(units, random) {
+/** Destroyed units are removed, survivors get their shield back for the next round. */
+function endRound(units) {
   const survivors = [];
 
   for (const unit of units) {
     if (unit.hull <= 0) {
-      continue;
-    }
-
-    const integrity = unit.hull / unit.maxHull;
-
-    if (integrity < EXPLOSION_THRESHOLD && random() < 1 - integrity) {
       continue;
     }
 
@@ -205,8 +206,8 @@ function debrisOf(losses, options) {
  *
  * Follows the game rules: up to six rounds, every unit fires once per round at a
  * random enemy, rapid fire grants extra shots, shots below 1% of the target
- * shield bounce off, shields come back every round, and a unit under 70% hull
- * may explode at the end of the round.
+ * shield bounce off, shields come back every round, and a unit hit while under
+ * 70% hull may explode.
  *
  * A battle is random, so one run is one possible outcome. The `seed` makes a run
  * reproducible; average several seeds to get a feel for the likely result.
@@ -258,8 +259,8 @@ function simulateCombat(attacker, defender, options = {}) {
       fire(unit, attackers, random);
     }
 
-    attackers = endRound(attackers, random);
-    defenders = endRound(defenders, random);
+    attackers = endRound(attackers);
+    defenders = endRound(defenders);
   }
 
   const attackerResult = summarise(attackers, attackerFleet);
