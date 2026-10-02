@@ -1,5 +1,7 @@
 import DESTROYABLE, { ATTRIBUTES } from '../models/destroyable.js';
 import getDebris from './getDebris.js';
+import { getCargoCapacity } from './expedition.js';
+import { MOON_DEBRIS_THRESHOLD, MAX_MOON_CHANCE } from './moonLock.js';
 
 const ROUNDS = 6;
 
@@ -14,6 +16,15 @@ const BOUNCE_RATIO = 0.01;
 
 /** Below that share of its hull, a unit hit by a shot may explode on the spot. */
 const EXPLOSION_THRESHOLD = 0.7;
+
+/** The share of destroyed defenses that come back after a battle, on most universes. */
+const DEFAULT_REPAIR_FACTOR = 0.7;
+
+/** The share of the defender's resources a winning attacker can carry away. */
+const DEFAULT_PLUNDER_RATIO = 0.5;
+
+/** Every 100 000 units of debris add 1% to the moon chance. */
+const MOON_DEBRIS_PER_PERCENT = MOON_DEBRIS_THRESHOLD / MAX_MOON_CHANCE;
 
 /** Rapid-fire tables point at library ids, so we need the way back. */
 const LIBRARY_ID = new Map(
@@ -187,18 +198,98 @@ function summarise(units, initial) {
 }
 
 function debrisOf(losses, options) {
-  const { debrisFactor, deuteriumDebrisFactor, defenseDebris } = options;
+  const { debrisFactor, deuteriumDebrisFactor, defenseDebrisFactor } = options;
 
   return losses
-    // On most universes only ships leave debris behind.
-    .filter(({ ship }) => defenseDebris || ship.category === ATTRIBUTES.CATEGORIES.SHIPS)
-    .map(({ ship, count }) => getDebris(ship, count, debrisFactor, deuteriumDebrisFactor))
+    // On most universes only ships leave debris behind, defenses have their own factor.
+    .map(({ ship, count }) => (ship.category === ATTRIBUTES.CATEGORIES.SHIPS
+      ? getDebris(ship, count, debrisFactor, deuteriumDebrisFactor)
+      : getDebris(ship, count, defenseDebrisFactor, deuteriumDebrisFactor > 0 ? defenseDebrisFactor : 0)))
     .reduce((total, debris) => ({
       metal: total.metal + debris.metal,
       crystal: total.crystal + debris.crystal,
       deuterium: total.deuterium + debris.deuterium,
     }), { metal: 0, crystal: 0, deuterium: 0 });
 }
+
+/** Each destroyed defense is rebuilt, or not, on its own roll. */
+function rebuild(losses, repairFactor, random) {
+  const rebuilt = [];
+
+  for (const { ship, count } of losses) {
+    if (ship.category !== ATTRIBUTES.CATEGORIES.DEFENSES) {
+      continue;
+    }
+
+    let back = 0;
+
+    for (let i = 0; i < count; i += 1) {
+      if (random() < repairFactor) {
+        back += 1;
+      }
+    }
+
+    if (back > 0) {
+      rebuilt.push({ ship, count: back });
+    }
+  }
+
+  return rebuilt;
+}
+
+/**
+ * The surviving ships carry away up to `ratio` of the defender's resources,
+ * spread in proportion to what lies on the planet.
+ */
+function plunderOf(survivors, plunder) {
+  const {
+    resources, ratio = DEFAULT_PLUNDER_RATIO, hyperspaceLevel, hyperspaceMultiplier, bonus,
+  } = plunder;
+
+  const lootable = {
+    metal: (resources.metal ?? 0) * ratio,
+    crystal: (resources.crystal ?? 0) * ratio,
+    deuterium: (resources.deuterium ?? 0) * ratio,
+  };
+  const total = lootable.metal + lootable.crystal + lootable.deuterium;
+  const capacity = survivors
+    .map(({ ship, count }) => getCargoCapacity(ship, { hyperspaceLevel, hyperspaceMultiplier, bonus }) * count)
+    .reduce((sum, value) => sum + value, 0);
+
+  if (total === 0 || capacity >= total) {
+    return lootable;
+  }
+
+  const share = capacity / total;
+
+  return {
+    metal: Math.floor(lootable.metal * share),
+    crystal: Math.floor(lootable.crystal * share),
+    deuterium: Math.floor(lootable.deuterium * share),
+  };
+}
+
+function moonChanceOf(debris) {
+  const total = debris.metal + debris.crystal + debris.deuterium;
+
+  return Math.min(MAX_MOON_CHANCE, Math.floor(total / MOON_DEBRIS_PER_PERCENT));
+}
+
+/**
+ * @typedef {object} CombatResult One simulated battle
+ * @property {'attacker'|'defender'|'draw'} winner Who won
+ * @property {number} rounds How many rounds it lasted
+ * @property {number} seed The PRNG seed it ran with
+ * @property {{survivors: import('../types.js').FleetEntry[], losses: import('../types.js').FleetEntry[]}} attacker
+ *   What is left of the attacker, and what it lost
+ * @property {{
+ *   survivors: import('../types.js').FleetEntry[], losses: import('../types.js').FleetEntry[],
+ *   rebuilt: import('../types.js').FleetEntry[],
+ * }} defender What is left of the defender, what it lost, and which of its lost defenses come back
+ * @property {import('../types.js').Resources} debris The debris field
+ * @property {number} moonChance The moon chance it gives, in %
+ * @property {import('../types.js').Resources} plunder What the attacker carries away
+ */
 
 /**
  *
@@ -209,8 +300,13 @@ function debrisOf(losses, options) {
  * shield bounce off, shields come back every round, and a unit hit while under
  * 70% hull may explode.
  *
+ * Afterwards, each destroyed defense is rebuilt with a `repairFactor` chance,
+ * the debris field gives the moon chance (1% per 100 000, up to 20%), and a
+ * winning attacker loads what it can of the defender's resources when
+ * `plunder` says what lies on the planet.
+ *
  * A battle is random, so one run is one possible outcome. The `seed` makes a run
- * reproducible; average several seeds to get a feel for the likely result.
+ * reproducible; `getCombatStatistics` averages several of them.
  * @param {object} attacker The attacking side
  * @param {import('../types.js').FleetEntry[]} attacker.fleet Its ships
  * @param {import('../types.js').CombatTechs} [attacker.techs] Its combat technology levels
@@ -219,13 +315,16 @@ function debrisOf(losses, options) {
  * @param {number} [options.seed] The PRNG seed, for a reproducible battle
  * @param {number} [options.debrisFactor] The universe debris factor
  * @param {number} [options.deuteriumDebrisFactor] The universe deuterium debris factor
- * @param {boolean} [options.defenseDebris] Whether destroyed defenses leave debris
- * @returns {{
- *   winner: 'attacker'|'defender'|'draw', rounds: number, seed: number,
- *   attacker: {survivors: import('../types.js').FleetEntry[], losses: import('../types.js').FleetEntry[]},
- *   defender: {survivors: import('../types.js').FleetEntry[], losses: import('../types.js').FleetEntry[]},
- *   debris: import('../types.js').Resources,
- * }} Who won, how long it took, what is left on each side, and the debris field
+ * @param {boolean} [options.defenseDebris] Whether destroyed defenses leave debris, at `debrisFactor`
+ * @param {number} [options.defenseDebrisFactor] The universe defense debris factor, overrides `defenseDebris`
+ * @param {number} [options.repairFactor] The chance for a destroyed defense to be rebuilt, 0.7 by default
+ * @param {object} [options.plunder] What the attacker may carry away if it wins
+ * @param {import('../types.js').Resources} options.plunder.resources The resources on the planet
+ * @param {number} [options.plunder.ratio] The share of them up for grabs, 0.5 by default
+ * @param {number} [options.plunder.hyperspaceLevel] The attacker's Hyperspace Technology level
+ * @param {number} [options.plunder.hyperspaceMultiplier] The % of base cargo per level, 5 by default
+ * @param {number} [options.plunder.bonus] Any other cargo bonus, as a fraction
+ * @returns {CombatResult} Who won, how long it took, what is left on each side, and what the battle left behind
  */
 function simulateCombat(attacker, defender, options = {}) {
   const {
@@ -233,6 +332,9 @@ function simulateCombat(attacker, defender, options = {}) {
     debrisFactor = 0.3,
     deuteriumDebrisFactor = 0,
     defenseDebris = false,
+    defenseDebrisFactor = defenseDebris ? debrisFactor : 0,
+    repairFactor = DEFAULT_REPAIR_FACTOR,
+    plunder,
   } = options;
 
   const random = createRandom(seed);
@@ -274,19 +376,25 @@ function simulateCombat(attacker, defender, options = {}) {
     winner = 'defender';
   }
 
+  const debris = debrisOf([...attackerResult.losses, ...defenderResult.losses], {
+    debrisFactor,
+    deuteriumDebrisFactor,
+    defenseDebrisFactor,
+  });
+
   return {
     winner,
     rounds,
     seed,
     attacker: attackerResult,
-    defender: defenderResult,
-    debris: debrisOf([...attackerResult.losses, ...defenderResult.losses], {
-      debrisFactor,
-      deuteriumDebrisFactor,
-      defenseDebris,
-    }),
+    defender: { ...defenderResult, rebuilt: rebuild(defenderResult.losses, repairFactor, random) },
+    debris,
+    moonChance: moonChanceOf(debris),
+    plunder: plunder && winner === 'attacker'
+      ? plunderOf(attackerResult.survivors, plunder)
+      : { metal: 0, crystal: 0, deuterium: 0 },
   };
 }
 
-export { createRandom, ROUNDS };
+export { createRandom, ROUNDS, DEFAULT_REPAIR_FACTOR, DEFAULT_PLUNDER_RATIO };
 export default simulateCombat;

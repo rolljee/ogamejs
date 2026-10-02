@@ -321,7 +321,7 @@ Ogame.Fleets.getDebris(Ogame.models.Destroyable[1], 100, 0.3);
 
 #### `simulateCombat(attacker, defender, options = {})`
 
-A full battle: up to six rounds, every unit fires once per round at a random enemy, rapid fire grants extra shots, shots below 1% of the target's shield bounce off, shields come back every round, and a unit under 70% hull may explode at the end of the round.
+A full battle: up to six rounds, every unit fires once per round at a random enemy, rapid fire grants extra shots, shots below 1% of the target's shield bounce off, shields come back every round, and a unit hit while under 70% hull may explode. Afterwards, destroyed defenses are rebuilt (70% chance each), the debris field gives the moon chance, and a winning attacker loads what its surviving ships can carry.
 
 ```javascript
 const battle = Ogame.Fleets.simulateCombat(
@@ -333,26 +333,50 @@ const battle = Ogame.Fleets.simulateCombat(
     fleet: [{ ship: Ogame.models.Destroyable[201], count: 200 }],
     techs: { weapons: 10, shielding: 10, armour: 10 },
   },
-  { seed: 42, debrisFactor: 0.3 },
+  {
+    seed: 42,
+    debrisFactor: 0.3,
+    plunder: { resources: { metal: 500000, crystal: 200000, deuterium: 100000 }, hyperspaceLevel: 8 },
+  },
 );
 // → {
 //   winner: 'attacker' | 'defender' | 'draw',
 //   rounds: Number,
 //   seed: Number,
 //   attacker: { survivors: [{ ship, count }], losses: [{ ship, count }] },
-//   defender: { survivors: [...], losses: [...] },
+//   defender: { survivors: [...], losses: [...], rebuilt: [...] },
 //   debris: { metal, crystal, deuterium },
+//   moonChance: Number, // in %
+//   plunder: { metal, crystal, deuterium },
 // }
 ```
 
-A battle is **random**, so one run is one possible outcome. Pass a `seed` to replay the exact same fight; average several seeds to get a feel for the likely result:
+| Option | Default | |
+| --- | --- | --- |
+| `seed` | `Date.now()` | replays the exact same fight |
+| `debrisFactor` | `0.3` | share of the destroyed ships' metal and crystal left as debris |
+| `deuteriumDebrisFactor` | `0` | same for deuterium |
+| `defenseDebrisFactor` | `0` (`debrisFactor` with `defenseDebris: true`) | same for destroyed defenses |
+| `repairFactor` | `0.7` | chance for each destroyed defense to be rebuilt |
+| `plunder` | none | `{ resources, ratio = 0.5, hyperspaceLevel, hyperspaceMultiplier, bonus }`; the loot is spread like the resources on the planet |
+
+#### `simulateCombats(attacker, defender, options = {})` / `getCombatStatistics(results)`
+
+A battle is **random**, so one run is one possible outcome. `simulateCombats` runs the same battle `runs` times (100 by default, seeds `seed`, `seed + 1`…) and averages them; `getCombatStatistics` does the averaging on results you simulated yourself, for instance in batches from a Web Worker.
 
 ```javascript
-const runs = Array.from({ length: 100 }, (_, seed) => simulateCombat(a, d, { seed }));
-const winRate = runs.filter((run) => run.winner === 'attacker').length / runs.length;
+Ogame.Fleets.simulateCombats(attacker, defender, { runs: 100, seed: 1, debrisFactor: 0.3 });
+// → {
+//   runs: 100,
+//   outcomes: { attacker: 0.92, defender: 0, draw: 0.08 }, // shares, from 0 to 1
+//   rounds: 2.4,
+//   attacker: { survivors, losses, lostResources },
+//   defender: { survivors, losses, rebuilt, lostResources },
+//   debris, moonChance, plunder,
+// }
 ```
 
-Destroyed defenses are left out of the debris field unless you pass `defenseDebris: true`. Defense repair after a battle is not modelled.
+Counts are averages, so not whole numbers. `lostResources` is what the units lost for good cost: rebuilt defenses do not count.
 
 #### `getMoonbreakChance(moonSize, fleets)` / `getMoonbreakLosses(moonSize, fleets)` / `getMoonbreakWaves(rip)`
 
