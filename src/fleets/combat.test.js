@@ -83,6 +83,32 @@ describe('A battle should', () => {
   });
 });
 
+describe('Explosions should', () => {
+  it('Be rolled on every hit, not once at the end of the round', () => {
+    // Two battleships fire 1000 at a cruiser (2700 hull, 50 shield). The first
+    // hit leaves it at 65% (35% to explode), the second at 28% (72%). Rolled on
+    // each hit it blows up in round one 82% of the time, rolled once at the
+    // end of the round only 72% of the time.
+    const runs = 2000;
+    let exploded = 0;
+
+    for (let seed = 1; seed <= runs; seed += 1) {
+      const result = simulateCombat(
+        { fleet: [{ ship: DESTROYABLE[4], count: 2 }] },
+        { fleet: [{ ship: DESTROYABLE[3], count: 1 }] },
+        { seed },
+      );
+
+      if (result.rounds === 1 && result.winner === 'attacker') {
+        exploded += 1;
+      }
+    }
+
+    expect(exploded / runs).toBeGreaterThan(0.78);
+    expect(exploded / runs).toBeLessThan(0.86);
+  });
+});
+
 describe('Technologies should matter, so that', () => {
   const run = (techs, seed) => simulateCombat(
     { fleet: fighters(100), techs },
@@ -147,6 +173,80 @@ describe('Battle debris should', () => {
     );
 
     expect(result.debris.deuterium).toBeGreaterThan(0);
+  });
+});
+
+describe('After the battle', () => {
+  const crushing = { fleet: [{ ship: DESTROYABLE[8], count: 20 }] };
+  const launchers = { fleet: [{ ship: DESTROYABLE[201], count: 1000 }] };
+
+  it('About 70% of the destroyed defenses come back', () => {
+    const result = simulateCombat(crushing, launchers, { seed: 4 });
+
+    expect(result.defender.losses).toEqual([{ ship: DESTROYABLE[201], count: 1000 }]);
+    expect(result.defender.rebuilt[0].count).toBeGreaterThan(650);
+    expect(result.defender.rebuilt[0].count).toBeLessThan(750);
+  });
+
+  it('Destroyed ships never come back', () => {
+    const result = simulateCombat(crushing, { fleet: fighters(100) }, { seed: 4 });
+
+    expect(result.defender.rebuilt).toEqual([]);
+  });
+
+  it('The universe repair factor is honoured', () => {
+    expect(simulateCombat(crushing, launchers, { seed: 4, repairFactor: 0 }).defender.rebuilt).toEqual([]);
+    expect(simulateCombat(crushing, launchers, { seed: 4, repairFactor: 1 }).defender.rebuilt)
+      .toEqual([{ ship: DESTROYABLE[201], count: 1000 }]);
+  });
+
+  it('Defenses leave debris at the defense debris factor', () => {
+    const result = simulateCombat(crushing, launchers, { seed: 4, defenseDebrisFactor: 0.1 });
+
+    expect(result.debris.metal).toBeCloseTo(1000 * 2000 * 0.1);
+  });
+
+  it('The moon chance grows by 1% per 100 000 debris, up to 20%', () => {
+    // 100 light fighters leave 120 000 debris at 30%, 1 000 leave 1 200 000.
+    const chance = (count) => simulateCombat(
+      crushing,
+      { fleet: fighters(count) },
+      { seed: 4, debrisFactor: 0.3 },
+    ).moonChance;
+
+    expect(chance(100)).toBe(1);
+    expect(chance(1000)).toBe(12);
+    expect(chance(5000)).toBe(20);
+  });
+
+  it('A winning attacker loads half the resources if it has the room', () => {
+    const result = simulateCombat(crushing, { fleet: fighters(10) }, {
+      seed: 4,
+      plunder: { resources: { metal: 200000, crystal: 100000, deuterium: 50000 } },
+    });
+
+    expect(result.plunder).toEqual({ metal: 100000, crystal: 50000, deuterium: 25000 });
+  });
+
+  it('The loot is capped by the cargo of the surviving ships, hyperspace included', () => {
+    // A deathstar holds 1 000 000, plus 5% per Hyperspace level: 1 500 000 at level 10.
+    const result = simulateCombat(
+      { fleet: [{ ship: DESTROYABLE[8], count: 1 }] },
+      { fleet: fighters(1) },
+      { seed: 4, plunder: { resources: { metal: 3000000, crystal: 3000000, deuterium: 0 }, hyperspaceLevel: 10 } },
+    );
+
+    // Out of 3 000 000 up for grabs, spread like the resources on the planet.
+    expect(result.plunder).toEqual({ metal: 750000, crystal: 750000, deuterium: 0 });
+  });
+
+  it('Nothing is plundered unless the attacker wins', () => {
+    const result = simulateCombat({ fleet: fighters(1) }, crushing, {
+      seed: 4,
+      plunder: { resources: { metal: 1000, crystal: 1000, deuterium: 1000 } },
+    });
+
+    expect(result.plunder).toEqual({ metal: 0, crystal: 0, deuterium: 0 });
   });
 });
 
