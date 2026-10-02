@@ -1,3 +1,15 @@
+# [4.2.0](https://github.com/rolljee/ogamejs/compare/v4.1.0...v4.2.0) (2026-10-02)
+
+
+### Bug Fixes
+
+* **fleets:** roll the explosion chance on every hit of a battle ([d83fb37](https://github.com/rolljee/ogamejs/commit/d83fb3796b754d53a33d473f398c1bbce7fd1871))
+
+
+### Features
+
+* **fleets:** average many battles, with defense repair, moon chance and plunder ([e72149a](https://github.com/rolljee/ogamejs/commit/e72149a871ea27a4b201b40f3df0af8a440fb4da))
+
 # [4.1.0](https://github.com/rolljee/ogamejs/compare/v4.0.2...v4.1.0) (2026-10-01)
 
 
