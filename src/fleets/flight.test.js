@@ -53,6 +53,33 @@ describe('Fuel consumption should be correctly returned when', () => {
   });
 });
 
+describe('Fuel savings should be applied when', () => {
+  const cargo = [{ ship: DESTROYABLE[12], count: 100 }];
+
+  it('The universe burns 80% of the usual deuterium', () => {
+    // 100 * floor(50 * 0.8) * 7355 / 35000 * 4
+    expect(getFuelConsumption(cargo, 7355, 100, {}, { deuteriumFactor: 0.8 })).toBe(3362);
+  });
+
+  it('The General saves a quarter on top', () => {
+    const general = [{ ...cargo[0], fuelReduction: 0.25 }];
+
+    // 100 * floor(40 * 0.75) * 7355 / 35000 * 4
+    expect(getFuelConsumption(general, 7355, 100, {}, { deuteriumFactor: 0.8 })).toBe(2522);
+  });
+
+  it('The savings stop at 90%', () => {
+    const lots = [{ ...cargo[0], fuelReduction: 1.5 }];
+
+    expect(getFuelConsumption(lots, 7355, 100, {}, { deuteriumFactor: 0.8 })).toBe(336);
+  });
+
+  it('The universe factor is out of range', () => {
+    expect(() => getFuelConsumption(cargo, 7355, 100, {}, { deuteriumFactor: 0 }))
+      .toThrow('deuteriumFactor must be greater than 0');
+  });
+});
+
 describe('A trip should be correctly described when', () => {
   const fleet = [{ ship: DESTROYABLE[12], count: 100 }];
 
@@ -79,6 +106,14 @@ describe('A trip should be correctly described when', () => {
 
     expect(roundTrip.duration).toBe(oneWay.duration * 2);
     expect(roundTrip.fuel).toBe(oneWay.fuel * 2);
+  });
+
+  it('The universe is a donut', () => {
+    const trip = getTrip(fleet, at(1, 1, 1), at(1, 499, 8), {
+      universe: { systems: 499, donutSystem: true },
+    });
+
+    expect(trip.distance).toBe(2795);
   });
 
   it('The fuel eats into the cargo hold', () => {

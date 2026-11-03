@@ -30,6 +30,27 @@ describe('Ship speed should be correctly returned when', () => {
   });
 });
 
+describe('Speed bonuses should be added when', () => {
+  it('The class doubles the base speed on top of the drive bonus', () => {
+    // 5000 * (1 + 0.1 * 6 + 1)
+    expect(getShipSpeed(DESTROYABLE[11], { combustion: 6 }, 1)).toBe(13000);
+  });
+
+  it('A fleet entry carries its own bonus', () => {
+    const fleet = [
+      { ship: DESTROYABLE[11], count: 10, speedBonus: 1 },
+      { ship: DESTROYABLE[12], count: 10 },
+    ];
+
+    // The large cargo, without bonus, sets the pace: 7500 * 1.6
+    expect(getFleetSpeed(fleet, { combustion: 6 })).toBe(12000);
+  });
+
+  it('The bonus is not a number', () => {
+    expect(() => getShipSpeed(DESTROYABLE[11], {}, -1)).toThrow('speed bonus must be a number >= 0');
+  });
+});
+
 describe('Drive upgrades should be handled when', () => {
   it('The small cargo has not reached impulse 5 yet', () => {
     const drive = getActiveDrive(DESTROYABLE[11], { combustion: 6, impulse: 4 });

@@ -120,6 +120,19 @@
  * @typedef {object} FleetEntry A group of identical ships
  * @property {DestroyableEntry} ship The ship
  * @property {number} count How many of them
+ * @property {number} [speedBonus] Extra speed, as a share of the ship's base
+ *   speed: 1 for the class bonus that doubles it, 0.05 for a 5% life form bonus,
+ *   summed
+ * @property {number} [fuelReduction] Deuterium saved, as a share: the General's
+ *   class discount plus the life form one, capped at 0.9 like the game does
+ */
+
+/**
+ * @typedef {object} UniverseShape How the universe wraps around
+ * @property {number} [galaxies] The number of galaxies
+ * @property {number} [systems] The number of systems per galaxy
+ * @property {boolean} [donutGalaxy] Whether the last galaxy touches the first
+ * @property {boolean} [donutSystem] Whether the last system touches the first
  */
 
 /**

@@ -1,7 +1,9 @@
 import getDebris from './getDebris.js';
 import getDistance from './distance.js';
 import getShipSpeed, { getActiveDrive, getFleetSpeed } from './speed.js';
-import { getFlightTime, getFuelConsumption, getTrip } from './flight.js';
+import {
+  getFlightTime, getFuelConsumption, getTrip, MAX_FUEL_REDUCTION,
+} from './flight.js';
 import simulateCombat, { DEFAULT_REPAIR_FACTOR, DEFAULT_PLUNDER_RATIO } from './combat.js';
 import { getCombatStatistics, simulateCombats, DEFAULT_RUNS } from './combatStatistics.js';
 import {
@@ -52,6 +54,7 @@ export {
   EXPEDITION_TOP_TIER_BASE,
   MOON_DEBRIS_THRESHOLD,
   MAX_MOON_CHANCE,
+  MAX_FUEL_REDUCTION,
   DEFAULT_REPAIR_FACTOR,
   DEFAULT_PLUNDER_RATIO,
   DEFAULT_RUNS,

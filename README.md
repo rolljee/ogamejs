@@ -259,18 +259,28 @@ Ogame.Research.getResearchTime(Ogame.models.Research[122], 10, 12, 2); // Plasma
 
 ### `Ogame.Fleets`
 
-#### `getDistance(origin, target)`
+#### `getDistance(origin, target, universe = {})`
 
 Coordinates are `{ galaxy, system, position }`. The scale is not linear.
 
 ```javascript
 Ogame.Fleets.getDistance({ galaxy: 1, system: 1, position: 1 }, { galaxy: 4, system: 1, position: 1 });
 // → 60000
+
+// Most universes are donuts: the last galaxy touches the first
+Ogame.Fleets.getDistance(
+  { galaxy: 1, system: 1, position: 1 },
+  { galaxy: 6, system: 1, position: 1 },
+  { galaxies: 6, systems: 499, donutGalaxy: true, donutSystem: true },
+);
+// → 20000
 ```
 
-#### `getShipSpeed(ship, drives = {})` / `getFleetSpeed(fleet, drives = {})` / `getActiveDrive(ship, drives = {})`
+#### `getShipSpeed(ship, drives = {}, bonus = 0)` / `getFleetSpeed(fleet, drives = {})` / `getActiveDrive(ship, drives = {}, bonus = 0)`
 
 `drives` holds the `{ combustion, impulse, hyperspace }` levels. Each level adds 10%, 20% or 30% of the ship's base speed, and only the drive the ship actually flies on counts.
+
+`bonus` adds to that, as a share of the base speed: `1` for the class bonus that doubles a ship's speed (Collector transporters, General warships), `0.05` for a 5% life form bonus. In a fleet, each entry carries its own `speedBonus`.
 
 A few ships switch to a better drive once the matching technology is high enough. `getActiveDrive` tells you which one is in use — and since a switch also changes the fuel burn, it reports that too.
 
@@ -289,11 +299,13 @@ Ogame.Fleets.getFleetSpeed([{ ship: Ogame.models.Destroyable[1], count: 100 }], 
 
 `(10 + 350000 / speedPercent × √(distance × 10 / fleetSpeed)) / universeFleetSpeed`, in seconds — at 100%, the familiar `10 + 3500 × √(distance × 10 / fleetSpeed)`.
 
-#### `getFuelConsumption(fleet, distance, speedPercent = 100, drives = {})`
+#### `getFuelConsumption(fleet, distance, speedPercent = 100, drives = {}, options = {})`
 
 Each ship type is billed on its own, at least one unit, then the bills add up:
 `Σ max(1, round(consumption × count × distance / 35000 × (shipSpeedValue / 10 + 1)²))`, in deuterium.
 `shipSpeedValue` is `speedPercent / 10` for the slowest ship and `speedPercent / 10 × √(fleetSpeed / shipSpeed)` for the faster ones it holds back, which burn less than at full throttle.
+
+`consumption` is the ship's own after the universe factor (`options.deuteriumFactor`, `globalDeuteriumSaveFactor` in the API) and the entry's `fuelReduction` (General, life forms, capped at `MAX_FUEL_REDUCTION`, 90%), each rounded down and never below one unit.
 
 #### `getTrip(fleet, origin, target, options = {})`
 
@@ -309,6 +321,8 @@ Ogame.Fleets.getTrip(
 // → { distance: 40000, fleetSpeed: 19500, duration: 15862, fuel: 216148,
 //     cargo: 6650000, cargoAfterFuel: 6433852 }
 ```
+
+`options` also takes `universeFleetSpeed`, `deuteriumFactor` and `universe` (the donut shape passed to `getDistance`).
 
 `cargoAfterFuel` is what is left once the deuterium is loaded — the number that decides whether a raid is worth flying.
 

@@ -32,9 +32,15 @@ function driveLevel(drives, drive) {
   return level;
 }
 
-function speedWith(baseSpeed, drive, drives) {
+function assertBonus(bonus) {
+  if (!Number.isFinite(bonus) || bonus < 0) {
+    throw new Error(`speed bonus must be a number >= 0, received ${bonus}`);
+  }
+}
+
+function speedWith(baseSpeed, drive, drives, bonus) {
   // eslint-disable-next-line security/detect-object-injection -- drive is a known key
-  return Math.floor(baseSpeed * (1 + DRIVE_BONUS[drive] * driveLevel(drives, drive)));
+  return Math.floor(baseSpeed * (1 + DRIVE_BONUS[drive] * driveLevel(drives, drive) + bonus));
 }
 
 /**
@@ -44,14 +50,20 @@ function speedWith(baseSpeed, drive, drives) {
  * A few ships switch to a better drive once the matching technology is high
  * enough — a small cargo moves to the impulse drive at Impulse 5. When several
  * drives are available the ship uses whichever ends up fastest.
+ *
+ * `bonus` adds to the drive bonus, as a share of the base speed: the class
+ * bonus that doubles a ship's speed is 1, a 5% life form bonus 0.05.
  * @param {import('../types.js').DestroyableEntry} ship An entry of models/destroyable.js
  * @param {import('../types.js').Drives} [drives] Drive levels
+ * @param {number} [bonus] Extra speed, as a share of the base speed
  * @returns {{drive: string, speed: number, fuelConsumption: number}} The active drive
  */
-function getActiveDrive(ship, drives = {}) {
+function getActiveDrive(ship, drives = {}, bonus = 0) {
   if (!ship || !ship.drive) {
     throw new Error('expected an entry of models/destroyable.js');
   }
+
+  assertBonus(bonus);
 
   const candidates = [
     { drive: ship.drive, speed: ship.speed, fuelConsumption: ship.fuelConsumption },
@@ -62,7 +74,7 @@ function getActiveDrive(ship, drives = {}) {
   return candidates
     .map(({ drive, speed, fuelConsumption }) => ({
       drive,
-      speed: speedWith(speed, drive, drives),
+      speed: speedWith(speed, drive, drives, bonus),
       fuelConsumption,
     }))
     .reduce((best, candidate) => (candidate.speed > best.speed ? candidate : best));
@@ -73,15 +85,18 @@ function getActiveDrive(ship, drives = {}) {
  * Return the speed of a ship, drive technologies included
  * @param {import('../types.js').DestroyableEntry} ship An entry of models/destroyable.js
  * @param {import('../types.js').Drives} [drives] Drive levels
+ * @param {number} [bonus] Extra speed, as a share of the base speed (class, life forms)
  * @returns {number} The speed the ship flies at
  */
-function getShipSpeed(ship, drives = {}) {
-  return getActiveDrive(ship, drives).speed;
+function getShipSpeed(ship, drives = {}, bonus = 0) {
+  return getActiveDrive(ship, drives, bonus).speed;
 }
 
 /**
  *
  * Return the speed of a whole fleet, which is the speed of its slowest ship
+ *
+ * Each entry may carry its own `speedBonus` (class, life forms).
  * @param {import('../types.js').FleetEntry[]} fleet The ships taking off
  * @param {import('../types.js').Drives} [drives] Drive levels
  * @returns {number} The fleet speed
@@ -93,7 +108,7 @@ function getFleetSpeed(fleet, drives = {}) {
 
   const speeds = fleet
     .filter(({ count }) => count > 0)
-    .map(({ ship }) => getShipSpeed(ship, drives));
+    .map(({ ship, speedBonus = 0 }) => getShipSpeed(ship, drives, speedBonus));
 
   if (speeds.length === 0) {
     throw new Error('fleet must hold at least one ship with a count above 0');
