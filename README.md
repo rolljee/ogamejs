@@ -44,8 +44,8 @@ Ogame.Fleets.getTrip(
   { galaxy: 3, system: 42, position: 6 },
   { drives: { combustion: 16, hyperspace: 12 } },
 );
-// → { distance: 40000, fleetSpeed: 19500, duration: 1595, fuel: 258287,
-//     cargo: 6650000, cargoAfterFuel: 6391713 }
+// → { distance: 40000, fleetSpeed: 19500, duration: 15862, fuel: 216148,
+//     cargo: 6650000, cargoAfterFuel: 6433852 }
 
 // And how it would go
 Ogame.Fleets.simulateCombat(
@@ -287,11 +287,13 @@ Ogame.Fleets.getFleetSpeed([{ ship: Ogame.models.Destroyable[1], count: 100 }], 
 
 #### `getFlightTime(distance, fleetSpeed, speedPercent = 100, universeFleetSpeed = 1)`
 
-`(10 + 35000 / speedPercent × √(distance × 10 / fleetSpeed)) / universeFleetSpeed`, in seconds.
+`(10 + 350000 / speedPercent × √(distance × 10 / fleetSpeed)) / universeFleetSpeed`, in seconds — at 100%, the familiar `10 + 3500 × √(distance × 10 / fleetSpeed)`.
 
 #### `getFuelConsumption(fleet, distance, speedPercent = 100, drives = {})`
 
-`1 + round(Σ(consumption × count) × distance / 35000 × (speedPercent / 100 + 1)²)`, in deuterium.
+Each ship type is billed on its own, at least one unit, then the bills add up:
+`Σ max(1, round(consumption × count × distance / 35000 × (shipSpeedValue / 10 + 1)²))`, in deuterium.
+`shipSpeedValue` is `speedPercent / 10` for the slowest ship and `speedPercent / 10 × √(fleetSpeed / shipSpeed)` for the faster ones it holds back, which burn less than at full throttle.
 
 #### `getTrip(fleet, origin, target, options = {})`
 
@@ -304,8 +306,8 @@ Ogame.Fleets.getTrip(
   { galaxy: 3, system: 42, position: 6 },
   { drives: { combustion: 16, hyperspace: 12 }, speedPercent: 100, roundTrip: false },
 );
-// → { distance: 40000, fleetSpeed: 19500, duration: 1595, fuel: 258287,
-//     cargo: 6650000, cargoAfterFuel: 6391713 }
+// → { distance: 40000, fleetSpeed: 19500, duration: 15862, fuel: 216148,
+//     cargo: 6650000, cargoAfterFuel: 6433852 }
 ```
 
 `cargoAfterFuel` is what is left once the deuterium is loaded — the number that decides whether a raid is worth flying.

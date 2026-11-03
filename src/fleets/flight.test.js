@@ -5,16 +5,16 @@ const at = (galaxy, system, position) => ({ galaxy, system, position });
 
 describe('Flight time should be correctly returned when', () => {
   it('The fleet flies at full speed', () => {
-    // 10 + 350 * sqrt(10050 / 20000)
-    expect(getFlightTime(1005, 20000)).toBe(258);
+    // 10 + 3500 * sqrt(10050 / 20000)
+    expect(getFlightTime(1005, 20000)).toBe(2491);
   });
 
   it('The fleet slows down to 10%', () => {
-    expect(getFlightTime(1005, 20000, 10)).toBe(2491);
+    expect(getFlightTime(1005, 20000, 10)).toBe(24821);
   });
 
   it('The universe has a fleet speed of its own', () => {
-    expect(getFlightTime(1005, 20000, 100, 5)).toBe(52);
+    expect(getFlightTime(1005, 20000, 100, 5)).toBe(498);
   });
 });
 
@@ -22,12 +22,27 @@ describe('Fuel consumption should be correctly returned when', () => {
   const oneFighter = [{ ship: DESTROYABLE[1], count: 1 }];
 
   it('One ship flies at full speed', () => {
-    // 1 + round(20 * 1005 / 35000 * (1 + 1) ** 2)
-    expect(getFuelConsumption(oneFighter, 1005)).toBe(3);
+    // round(20 * 1005 / 35000 * (1 + 1) ** 2)
+    expect(getFuelConsumption(oneFighter, 1005)).toBe(2);
   });
 
   it('Slowing down burns less fuel', () => {
-    expect(getFuelConsumption(oneFighter, 1005, 10)).toBe(2);
+    // round(20 * 1005 / 35000 * (0.1 + 1) ** 2) is 1
+    expect(getFuelConsumption(oneFighter, 1005, 10)).toBe(1);
+  });
+
+  it('A ship never flies for free', () => {
+    // A single probe next door burns a fraction of a unit, billed as one.
+    expect(getFuelConsumption([{ ship: DESTROYABLE[15], count: 1 }], 5)).toBe(1);
+  });
+
+  it('A fast ship held back by a slow one burns less than at full throttle', () => {
+    const fighters = [{ ship: DESTROYABLE[1], count: 1000 }];
+    const escorted = [...fighters, { ship: DESTROYABLE[8], count: 1 }];
+    const alone = getFuelConsumption(fighters, 20000);
+    const deathstar = getFuelConsumption([{ ship: DESTROYABLE[8], count: 1 }], 20000);
+
+    expect(getFuelConsumption(escorted, 20000)).toBeLessThan(alone + deathstar);
   });
 
   it('A ship that switched drive burns more', () => {
@@ -49,10 +64,10 @@ describe('A trip should be correctly described when', () => {
     expect(trip).toEqual({
       distance: 7355,
       fleetSpeed: 16500,
-      duration: 749,
-      fuel: 4204,
+      duration: 7400,
+      fuel: 4203,
       cargo: 2500000,
-      cargoAfterFuel: 2495796,
+      cargoAfterFuel: 2495797,
     });
   });
 

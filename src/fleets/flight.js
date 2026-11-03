@@ -11,7 +11,9 @@ function assertSpeedPercent(speedPercent) {
  *
  * Return the one way flight time of a fleet
  *
- * `(10 + 35000 / speedPercent * sqrt(distance * 10 / fleetSpeed)) / universeFleetSpeed`
+ * `(10 + 350000 / speedPercent * sqrt(distance * 10 / fleetSpeed)) / universeFleetSpeed`
+ *
+ * At 100% that is the well known `10 + 3500 * sqrt(distance * 10 / fleetSpeed)`.
  * @param {number} distance The distance to cross, from `getDistance`
  * @param {number} fleetSpeed The speed of the slowest ship, from `getFleetSpeed`
  * @param {number} [speedPercent] The fleet speed slider, 10 to 100 in game
@@ -25,7 +27,7 @@ function getFlightTime(distance, fleetSpeed, speedPercent = 100, universeFleetSp
     throw new Error(`fleetSpeed must be greater than 0, received ${fleetSpeed}`);
   }
 
-  const seconds = 10 + (35000 / speedPercent) * Math.sqrt((distance * 10) / fleetSpeed);
+  const seconds = 10 + (350000 / speedPercent) * Math.sqrt((distance * 10) / fleetSpeed);
 
   return Math.round(seconds / universeFleetSpeed);
 }
@@ -34,7 +36,13 @@ function getFlightTime(distance, fleetSpeed, speedPercent = 100, universeFleetSp
  *
  * Return the deuterium a fleet burns for a one way trip
  *
- * `1 + round(sum(consumption * count) * distance / 35000 * (speedPercent / 100 + 1) ** 2)`
+ * Each ship type is billed on its own, then the bills add up:
+ * `max(1, round(consumption * count * distance / 35000 * (shipSpeedValue / 10 + 1) ** 2))`
+ *
+ * `shipSpeedValue` is the speed the ship really flies at, on the game's 1 to 10
+ * scale: `speedPercent / 10` for the slowest ship, less for the faster ones held
+ * back by it, `speedPercent / 10 * sqrt(fleetSpeed / shipSpeed)`. A faster ship
+ * flying slower than it could burns less than at full throttle.
  * @param {import('../types.js').FleetEntry[]} fleet The ships taking off
  * @param {number} distance The distance to cross, from `getDistance`
  * @param {number} [speedPercent] The fleet speed slider, 10 to 100 in game
@@ -45,20 +53,20 @@ function getFlightTime(distance, fleetSpeed, speedPercent = 100, universeFleetSp
 function getFuelConsumption(fleet, distance, speedPercent = 100, drives = {}) {
   assertSpeedPercent(speedPercent);
 
-  if (!Array.isArray(fleet) || fleet.length === 0) {
-    throw new Error('fleet must be a non empty array of { ship, count }');
-  }
+  const fleetSpeed = getFleetSpeed(fleet, drives);
 
-  const speedFactor = (speedPercent / 100 + 1) ** 2;
+  const total = fleet
+    .filter(({ count }) => count > 0)
+    .reduce((sum, { ship, count }) => {
+      // A ship that switched drive also changed how much it burns.
+      const { speed, fuelConsumption } = getActiveDrive(ship, drives);
+      const speedValue = (speedPercent / 10) * Math.sqrt(fleetSpeed / speed);
+      const base = Math.max(1, Math.round(fuelConsumption * count));
 
-  const consumption = fleet.reduce((total, { ship, count }) => {
-    // A ship that switched drive also changed how much it burns.
-    const { fuelConsumption } = getActiveDrive(ship, drives);
+      return sum + Math.max(1, Math.round((base * distance) / 35000 * (speedValue / 10 + 1) ** 2));
+    }, 0);
 
-    return total + fuelConsumption * count;
-  }, 0);
-
-  return 1 + Math.round((consumption * distance) / 35000 * speedFactor);
+  return Math.max(1, total);
 }
 
 /**
