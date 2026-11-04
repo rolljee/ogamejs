@@ -1,3 +1,15 @@
+# [4.3.0](https://github.com/rolljee/ogamejs/compare/v4.2.0...v4.3.0) (2026-11-04)
+
+
+### Bug Fixes
+
+* **fleets:** flight time ten times too short, fuel billed per ship type ([5db56bd](https://github.com/rolljee/ogamejs/commit/5db56bd16853b0249f545707d426ae65c3980776))
+
+
+### Features
+
+* **fleets:** donut universes, class and life form speed, fuel savings ([23f28d3](https://github.com/rolljee/ogamejs/commit/23f28d3ca1285b3b4686f49bbd8cbb678b11eddf))
+
 # [4.2.0](https://github.com/rolljee/ogamejs/compare/v4.1.0...v4.2.0) (2026-10-02)
 
 
