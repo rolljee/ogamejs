@@ -5,16 +5,16 @@ const at = (galaxy, system, position) => ({ galaxy, system, position });
 
 describe('Flight time should be correctly returned when', () => {
   it('The fleet flies at full speed', () => {
-    // 10 + 350 * sqrt(10050 / 20000)
-    expect(getFlightTime(1005, 20000)).toBe(258);
+    // 10 + 3500 * sqrt(10050 / 20000)
+    expect(getFlightTime(1005, 20000)).toBe(2491);
   });
 
   it('The fleet slows down to 10%', () => {
-    expect(getFlightTime(1005, 20000, 10)).toBe(2491);
+    expect(getFlightTime(1005, 20000, 10)).toBe(24821);
   });
 
   it('The universe has a fleet speed of its own', () => {
-    expect(getFlightTime(1005, 20000, 100, 5)).toBe(52);
+    expect(getFlightTime(1005, 20000, 100, 5)).toBe(498);
   });
 });
 
@@ -22,12 +22,27 @@ describe('Fuel consumption should be correctly returned when', () => {
   const oneFighter = [{ ship: DESTROYABLE[1], count: 1 }];
 
   it('One ship flies at full speed', () => {
-    // 1 + round(20 * 1005 / 35000 * (1 + 1) ** 2)
-    expect(getFuelConsumption(oneFighter, 1005)).toBe(3);
+    // round(20 * 1005 / 35000 * (1 + 1) ** 2)
+    expect(getFuelConsumption(oneFighter, 1005)).toBe(2);
   });
 
   it('Slowing down burns less fuel', () => {
-    expect(getFuelConsumption(oneFighter, 1005, 10)).toBe(2);
+    // round(20 * 1005 / 35000 * (0.1 + 1) ** 2) is 1
+    expect(getFuelConsumption(oneFighter, 1005, 10)).toBe(1);
+  });
+
+  it('A ship never flies for free', () => {
+    // A single probe next door burns a fraction of a unit, billed as one.
+    expect(getFuelConsumption([{ ship: DESTROYABLE[15], count: 1 }], 5)).toBe(1);
+  });
+
+  it('A fast ship held back by a slow one burns less than at full throttle', () => {
+    const fighters = [{ ship: DESTROYABLE[1], count: 1000 }];
+    const escorted = [...fighters, { ship: DESTROYABLE[8], count: 1 }];
+    const alone = getFuelConsumption(fighters, 20000);
+    const deathstar = getFuelConsumption([{ ship: DESTROYABLE[8], count: 1 }], 20000);
+
+    expect(getFuelConsumption(escorted, 20000)).toBeLessThan(alone + deathstar);
   });
 
   it('A ship that switched drive burns more', () => {
@@ -35,6 +50,33 @@ describe('Fuel consumption should be correctly returned when', () => {
 
     expect(getFuelConsumption(cargo, 7355, 100, { impulse: 5 }))
       .toBeGreaterThan(getFuelConsumption(cargo, 7355, 100, { impulse: 4 }));
+  });
+});
+
+describe('Fuel savings should be applied when', () => {
+  const cargo = [{ ship: DESTROYABLE[12], count: 100 }];
+
+  it('The universe burns 80% of the usual deuterium', () => {
+    // 100 * floor(50 * 0.8) * 7355 / 35000 * 4
+    expect(getFuelConsumption(cargo, 7355, 100, {}, { deuteriumFactor: 0.8 })).toBe(3362);
+  });
+
+  it('The General saves a quarter on top', () => {
+    const general = [{ ...cargo[0], fuelReduction: 0.25 }];
+
+    // 100 * floor(40 * 0.75) * 7355 / 35000 * 4
+    expect(getFuelConsumption(general, 7355, 100, {}, { deuteriumFactor: 0.8 })).toBe(2522);
+  });
+
+  it('The savings stop at 90%', () => {
+    const lots = [{ ...cargo[0], fuelReduction: 1.5 }];
+
+    expect(getFuelConsumption(lots, 7355, 100, {}, { deuteriumFactor: 0.8 })).toBe(336);
+  });
+
+  it('The universe factor is out of range', () => {
+    expect(() => getFuelConsumption(cargo, 7355, 100, {}, { deuteriumFactor: 0 }))
+      .toThrow('deuteriumFactor must be greater than 0');
   });
 });
 
@@ -49,10 +91,10 @@ describe('A trip should be correctly described when', () => {
     expect(trip).toEqual({
       distance: 7355,
       fleetSpeed: 16500,
-      duration: 749,
-      fuel: 4204,
+      duration: 7400,
+      fuel: 4203,
       cargo: 2500000,
-      cargoAfterFuel: 2495796,
+      cargoAfterFuel: 2495797,
     });
   });
 
@@ -64,6 +106,14 @@ describe('A trip should be correctly described when', () => {
 
     expect(roundTrip.duration).toBe(oneWay.duration * 2);
     expect(roundTrip.fuel).toBe(oneWay.fuel * 2);
+  });
+
+  it('The universe is a donut', () => {
+    const trip = getTrip(fleet, at(1, 1, 1), at(1, 499, 8), {
+      universe: { systems: 499, donutSystem: true },
+    });
+
+    expect(trip.distance).toBe(2795);
   });
 
   it('The fuel eats into the cargo hold', () => {
